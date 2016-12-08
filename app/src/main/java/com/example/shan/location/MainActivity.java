@@ -1,6 +1,5 @@
 package com.example.shan.location;
 
-import android.content.Context;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,31 +7,27 @@ import android.view.View;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
-
+    final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 2;
     LocationManager locationManager;
     MyLocationListener locationListener;
     TextView textView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textView=(TextView)findViewById(R.id.txtView);
+        textView = (TextView) findViewById(R.id.txtView);
 
-        locationManager = (LocationManager)
-                getSystemService(Context.LOCATION_SERVICE);
+        locationListener=new MyLocationListener(this);
 
-        locationListener = new MyLocationListener(this,textView);
 
     }
 
-    public void clickk(View view){
-        locationManager.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER,
-                1000,
-                0,
-                locationListener);
-        if(locationListener.getLoc()!=null)
-            textView.setText("LAt:"+locationListener.getLoc().getLatitude());
+    public void clickk(View view) {
+
+        textView.setText("lat:"+locationListener.getLatitude()+"\n"+"lon:"+locationListener.getLongitude());
     }
+
+
 }
