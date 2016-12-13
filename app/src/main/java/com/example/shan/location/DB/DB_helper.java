@@ -12,7 +12,7 @@ public class DB_helper extends SQLiteOpenHelper {
     //database and table attributes
     protected static final String db_name = "location_db";
     private static DB_helper db_helper = null;
-    private static final int db_version = 2;
+    private static final int db_version = 3;
 
     public static final String locations_table = "locations";
     public static final String user_id = "user_id";
