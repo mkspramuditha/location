@@ -108,11 +108,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-<<<<<<< HEAD
 
-=======
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0,
->>>>>>> e0328c0
+
                 new LocationListener() {
                     @Override
                     public void onLocationChanged(Location location) {
