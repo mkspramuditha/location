@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         locationDB=new LocationDB(MainActivity.this);
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0,
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 0,
                 new LocationListener() {
                     @Override
                     public void onLocationChanged(Location location) {
