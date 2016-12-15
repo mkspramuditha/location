@@ -1,15 +1,7 @@
 package com.example.shan.location;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
@@ -17,20 +9,11 @@ import android.widget.TextView;
 import com.example.shan.location.DB.LocationDB;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
-import static android.R.id.message;
 
 public class MainActivity extends AppCompatActivity {
 
     TextView txtRecords;
     TextView textView;
-    LocationManager locationManager;
-    MyLocationListener locationListener;
 
     LocationDB locationDB;
     MqttAndroidClient mqttAndroidClient;
@@ -42,10 +25,11 @@ public class MainActivity extends AppCompatActivity {
         textView = (TextView) findViewById(R.id.txtView);
         txtRecords=(TextView)findViewById(R.id.txtRecords);
 
-        locationDB=new LocationDB(MainActivity.this);
+        locationDB=LocationDB.getInstance(MainActivity.this);
 
 
-        mqttAndroidClient = new MqttAndroidClient(this.getApplicationContext(), "tcp://128.199.217.137:1883", "androidSampleClient");
+       /* mqttAndroidClient = new MqttAndroidClient(this.getApplicationContext(), "tcp://128.199.217.137:1883",
+                "androidSampleClient");
         mqttAndroidClient.setCallback(new MqttCallback() {
             @Override
             public void connectionLost(Throwable cause) {
@@ -90,57 +74,11 @@ public class MainActivity extends AppCompatActivity {
             });
         } catch (MqttException ex) {
 
-        }
+        }*/
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0,
-
-                new LocationListener() {
-                    @Override
-                    public void onLocationChanged(Location location) {
-                        String currentLocation = ""
-                                + location.getLatitude()
-                                + " ,"
-                                + location.getLongitude();
-
-                        //Toast.makeText(MainActivity.this, currentLocation, Toast.LENGTH_SHORT).show();
-                        textView.setText(currentLocation);
-                        locationDB.addLocation(location);
-
-                    }
-
-                    @Override
-                    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-                    }
-
-                    @Override
-                    public void onProviderEnabled(String provider) {
-
-                    }
-
-                    @Override
-                    public void onProviderDisabled(String provider) {
-
-                    }
-                });
-
+        //Toast.makeText(this,"before service",Toast.LENGTH_LONG).show();
+        Intent intent=new Intent(this,LocationService.class);
+        startService(intent);
 
     }
 
@@ -158,12 +96,12 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        try {
+        /*try {
             String text = txtRecords.getText().toString();
             mqttAndroidClient.publish("test", new MqttMessage(text.getBytes()));
         } catch (MqttException ex) {
 
-        }
+        }*/
     }
 
 

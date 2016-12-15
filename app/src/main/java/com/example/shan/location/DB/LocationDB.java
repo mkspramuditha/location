@@ -17,10 +17,18 @@ import java.util.Date;
  * Created by Chamod on 12/13/2016.
  */
 public class LocationDB {
-
+    private static LocationDB locationDB=null;
     Context context;
     DB_helper db_helper;
-    public LocationDB(Context context) {
+
+    public static LocationDB getInstance(Context context){
+        if(locationDB==null){
+            locationDB=new LocationDB(context);
+        }
+        return locationDB;
+    }
+
+    private LocationDB(Context context) {
         this.context=context;
         db_helper=DB_helper.getInstance(context);
     }
