@@ -17,12 +17,14 @@ public class MainActivity extends AppCompatActivity {
 
     LocationDB locationDB;
     MqttAndroidClient mqttAndroidClient;
+
+    Intent locationServiceIntent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textView = (TextView) findViewById(R.id.txtView);
         txtRecords=(TextView)findViewById(R.id.txtRecords);
 
         locationDB=LocationDB.getInstance(MainActivity.this);
@@ -77,13 +79,20 @@ public class MainActivity extends AppCompatActivity {
         }*/
 
         //Toast.makeText(this,"before service",Toast.LENGTH_LONG).show();
-        Intent intent=new Intent(this,LocationService.class);
-        startService(intent);
+
 
     }
 
-    public void clickk(View view) {
+    public void clickedStartService(View view){
+        locationServiceIntent=new Intent(this,LocationService.class);
+        startService(locationServiceIntent);
+    }
 
+    public void clickedStopService(View view){
+        stopService(locationServiceIntent);
+    }
+
+    public void clickedExitApp(View view) {
         System.exit(0);
     }
 

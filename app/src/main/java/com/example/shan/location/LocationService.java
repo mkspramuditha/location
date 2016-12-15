@@ -17,7 +17,6 @@ import com.example.shan.location.DB.LocationDB;
 public class LocationService extends IntentService {
 
     LocationManager locationManager;
-    MyLocationListener locationListener;
     LocationDB locationDB;
 
 
@@ -28,7 +27,7 @@ public class LocationService extends IntentService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Location service starting", Toast.LENGTH_SHORT).show();
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0,
 
@@ -65,6 +64,11 @@ public class LocationService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Toast.makeText(this,"weda",Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onDestroy() {
+        Toast.makeText(this,"Location service stopped",Toast.LENGTH_LONG).show();
+        super.onDestroy();
     }
 }

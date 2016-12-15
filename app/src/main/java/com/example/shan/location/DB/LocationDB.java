@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
-import android.widget.Toast;
 
 import com.example.shan.location.LocationRecord;
 
@@ -20,6 +19,8 @@ public class LocationDB {
     private static LocationDB locationDB=null;
     Context context;
     DB_helper db_helper;
+
+    boolean stopped=false;
 
     public static LocationDB getInstance(Context context){
         if(locationDB==null){
@@ -46,7 +47,7 @@ public class LocationDB {
 
         db.insert(db_helper.locations_table, null, values);
 
-        Toast.makeText(context, "loc added to db", Toast.LENGTH_LONG).show();
+        //Toast.makeText(context, "loc added to db", Toast.LENGTH_LONG).show();
     }
 
 

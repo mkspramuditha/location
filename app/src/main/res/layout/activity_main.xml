@@ -10,35 +10,46 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.shan.location.MainActivity">
 
-    <TextView
+
+    <Button
+        android:id="@+id/btnstartService"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        android:id="@+id/txtView"
+        android:text="Start location updates"
+        android:onClick="clickedStartService"
+        />
+
+    <Button
+        android:id="@+id/btnstopService"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnstartService"
+        android:text="Stop location updates"
+        android:onClick="clickedStopService"
         />
     <Button
-        android:id="@+id/btnReq"
+        android:id="@+id/btnExitApp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txtView"
+        android:layout_below="@+id/btnstopService"
         android:text="Stop location updates"
-        android:onClick="clickk"
+        android:onClick="clickedExitApp"
         />
     <Button
         android:id="@+id/btnShowRecords"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btnReq"
+        android:layout_below="@+id/btnExitApp"
         android:text="Show Records"
         android:onClick="clickShowRecords"
         />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        android:id="@+id/txtRecords"
+        android:text="Records"
         android:layout_below="@+id/btnShowRecords"
+        android:id="@+id/txtRecords"
         />
+
 
 </RelativeLayout>
