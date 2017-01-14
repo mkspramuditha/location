@@ -3,6 +3,7 @@ package com.example.shan.location;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,25 +17,51 @@ import android.widget.Toast;
 
 import com.example.shan.location.DB.LocationDB;
 
+import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
-/**
- * Created by Chamod on 12/15/2016.
- */
+
 public class LocationService extends IntentService {
 
     public static boolean IS_SERVICE_RUNNING = false;
 
     LocationManager locationManager;
     LocationDB locationDB;
+    MqttAndroidClient mqttAndroidClient;
+    private static MqttClient client;
+    String payload;
 
+    Context vm;
 
     public LocationService() {
         super("LocationService");
         locationDB=LocationDB.getInstance(this);
+
+        try {
+            MemoryPersistence persistance = new MemoryPersistence();
+            client = new MqttClient("tcp://128.199.217.137:1883", "client1", persistance);
+            client.connect();
+
+        } catch (MqttException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {String LOG_TAG="tag:";
+    public int onStartCommand(final Intent intent, int flags, int startId) {String LOG_TAG="tag:";
 
         if (intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION)) {
 
@@ -49,8 +76,21 @@ public class LocationService extends IntentService {
                                     + " ,"
                                     + location.getLongitude();
 
-                            //Toast.makeText(MainActivity.this, currentLocation, Toast.LENGTH_SHORT).show();
+
                             locationDB.addLocation(location);
+
+                            payload = location.getLatitude()+ " sdsdd " +location.getLongitude();
+
+                            MqttMessage message = new MqttMessage(payload.getBytes());
+                            try {
+                                client.publish("test", message);
+//            return true;
+                            } catch (MqttPersistenceException e) {
+                                e.printStackTrace();
+                            } catch (MqttException e) {
+                                e.printStackTrace();
+                            }
+
 
                         }
 
