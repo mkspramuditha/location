@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.shan.location.DB.LocationDB;
@@ -85,8 +86,20 @@ public class MainActivity extends AppCompatActivity {
 
     public void clickedStartService(View view){
         locationServiceIntent=new Intent(this,LocationService.class);
+        Button button = (Button) view;
+        if (!LocationService.IS_SERVICE_RUNNING) {
+            locationServiceIntent.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
+            LocationService.IS_SERVICE_RUNNING = true;
+            button.setText("Stop Service");
+        } else {
+            locationServiceIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
+            LocationService.IS_SERVICE_RUNNING = false;
+            button.setText("Start Service");
+
+        }
         startService(locationServiceIntent);
     }
+
 
     public void clickedStopService(View view){
         stopService(locationServiceIntent);
