@@ -48,7 +48,7 @@ public class LocationService extends IntentService {
         super("LocationService");
         locationDB=LocationDB.getInstance(this);
 
-        /*try {
+        try {
             MemoryPersistence persistance = new MemoryPersistence();
             client = new MqttClient("tcp://128.199.217.137:1883", "client1", persistance);
             client.connect();
@@ -57,7 +57,7 @@ public class LocationService extends IntentService {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
 
         vm=this;
 
@@ -66,18 +66,20 @@ public class LocationService extends IntentService {
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {String LOG_TAG="tag:";
 
-        /*if (intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION)) {
+//        if (intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION)) {
 
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0,
+//            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0,
+//
+//                    new LocationListener() {
+//                        @Override
+//                        public void onLocationChanged(Location location) {
+//
+//                           locationDB.addLocation(location);
 
-                    new LocationListener() {
-                        @Override
-                        public void onLocationChanged(Location location) {
-
-                           locationDB.addLocation(location);
-
-                            payload = location.getLatitude()+ " - " +location.getLongitude();
+            payload=locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER).getLatitude()+"";
+//
+                           // payload = location.getLatitude()+ " - " +location.getLongitude();
 
                             Toast.makeText(vm,payload,Toast.LENGTH_LONG).show();
 
@@ -90,54 +92,54 @@ public class LocationService extends IntentService {
                             } catch (MqttException e) {
                                 e.printStackTrace();
                             }
-
-
-                        }
-
-                        @Override
-                        public void onStatusChanged(String provider, int status, Bundle extras) {
-
-                        }
-
-                        @Override
-                        public void onProviderEnabled(String provider) {
-
-                        }
-
-                        @Override
-                        public void onProviderDisabled(String provider) {
-
-                        }
-                    });
-
-
-            Log.i(LOG_TAG, "Received Start Foreground Intent ");
+//
+//
+//                        }
+//
+//                        @Override
+//                        public void onStatusChanged(String provider, int status, Bundle extras) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onProviderEnabled(String provider) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onProviderDisabled(String provider) {
+//
+//                        }
+//                    });
+//
+//
+//            Log.i(LOG_TAG, "Received Start Foreground Intent ");
             showNotification();
             Toast.makeText(this, "Service Started!", Toast.LENGTH_SHORT).show();
 
 
-        } else if (intent.getAction().equals(Constants.ACTION.PREV_ACTION)) {
-            Log.i(LOG_TAG, "Clicked Previous");
-
-            Toast.makeText(this, "Clicked Previous!", Toast.LENGTH_SHORT)
-                    .show();
-        } else if (intent.getAction().equals(Constants.ACTION.PLAY_ACTION)) {
-            Log.i(LOG_TAG, "Clicked Play");
-
-            Toast.makeText(this, "Clicked Play!", Toast.LENGTH_SHORT).show();
-        } else if (intent.getAction().equals(Constants.ACTION.NEXT_ACTION)) {
-            Log.i(LOG_TAG, "Clicked Next");
-
-            Toast.makeText(this, "Clicked Next!", Toast.LENGTH_SHORT).show();
-        } else if (intent.getAction().equals(
-                Constants.ACTION.STOPFOREGROUND_ACTION)) {
-            Log.i(LOG_TAG, "Received Stop Foreground Intent");
-            stopForeground(true);
-            stopSelf();
-        }*/
-
-        Toast.makeText(this, "Clicked Next!", Toast.LENGTH_SHORT).show();
-        showNotification();
+//        } else if (intent.getAction().equals(Constants.ACTION.PREV_ACTION)) {
+//            Log.i(LOG_TAG, "Clicked Previous");
+//
+//            Toast.makeText(this, "Clicked Previous!", Toast.LENGTH_SHORT)
+//                    .show();
+//        } else if (intent.getAction().equals(Constants.ACTION.PLAY_ACTION)) {
+//            Log.i(LOG_TAG, "Clicked Play");
+//
+//            Toast.makeText(this, "Clicked Play!", Toast.LENGTH_SHORT).show();
+//        } else if (intent.getAction().equals(Constants.ACTION.NEXT_ACTION)) {
+//            Log.i(LOG_TAG, "Clicked Next");
+//
+//            Toast.makeText(this, "Clicked Next!", Toast.LENGTH_SHORT).show();
+//        } else if (intent.getAction().equals(
+//                Constants.ACTION.STOPFOREGROUND_ACTION)) {
+//            Log.i(LOG_TAG, "Received Stop Foreground Intent");
+//            stopForeground(true);
+//            stopSelf();
+//        }
+//
+//        Toast.makeText(this, "Clicked Next!", Toast.LENGTH_SHORT).show();
+//        showNotification();
 
         return START_STICKY;
 
