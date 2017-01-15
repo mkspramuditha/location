@@ -82,7 +82,7 @@ public class LocationService extends IntentService {
         for (LocationRecord lr:locationDB.getPendingLocationRecords()) {
             JSONObject jsonObject=new JSONObject();
             try {
-                jsonObject.put("imie", user.getEmi());
+                jsonObject.put("imie", "1234");                       //user.getEmi()
                 jsonObject.put("latitude",lr.getLatitude());
                 jsonObject.put("longitude",lr.getLongitude());
                 jsonObject.put("time",lr.getUpdated_time());
