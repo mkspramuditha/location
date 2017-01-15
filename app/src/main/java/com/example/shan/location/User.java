@@ -7,10 +7,12 @@ package com.example.shan.location;
 public class User {
     private String user_id;
     private String password;
+    private String emi;
 
-    public User(String user_id, String password) {
+    public User(String user_id,String emi, String password) {
         this.user_id = user_id;
         this.password = password;
+        this.emi=emi;
     }
 
     public String getUser_id() {
@@ -19,5 +21,9 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getEmi() {
+        return emi;
     }
 }

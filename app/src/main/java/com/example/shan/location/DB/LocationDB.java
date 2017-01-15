@@ -46,6 +46,7 @@ public class LocationDB {
         if (cursor.moveToNext())
         {
             return new User(cursor.getString(cursor.getColumnIndex(db_helper.user_id)),
+                    cursor.getString(cursor.getColumnIndex(db_helper.user_emi_no)),
                     cursor.getString(cursor.getColumnIndex(db_helper.user_password)));
         }
 
