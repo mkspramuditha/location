@@ -1,5 +1,6 @@
 package com.example.shan.location;
 
+import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -28,6 +29,8 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
+import java.util.Calendar;
+
 
 public class LocationService extends IntentService {
 
@@ -35,17 +38,17 @@ public class LocationService extends IntentService {
 
     LocationManager locationManager;
     LocationDB locationDB;
-    MqttAndroidClient mqttAndroidClient;
-    private static MqttClient client;
-    String payload;
 
     Context vm;
+
+    private static MqttClient client;
+    String payload;
 
     public LocationService() {
         super("LocationService");
         locationDB=LocationDB.getInstance(this);
 
-        try {
+        /*try {
             MemoryPersistence persistance = new MemoryPersistence();
             client = new MqttClient("tcp://128.199.217.137:1883", "client1", persistance);
             client.connect();
@@ -54,16 +57,16 @@ public class LocationService extends IntentService {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
-
+        vm=this;
 
     }
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {String LOG_TAG="tag:";
 
-        if (intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION)) {
+        /*if (intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION)) {
 
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0,
@@ -71,17 +74,14 @@ public class LocationService extends IntentService {
                     new LocationListener() {
                         @Override
                         public void onLocationChanged(Location location) {
-                            String currentLocation = ""
-                                    + location.getLatitude()
-                                    + " ,"
-                                    + location.getLongitude();
 
+                           locationDB.addLocation(location);
 
-                            locationDB.addLocation(location);
+                            payload = location.getLatitude()+ " - " +location.getLongitude();
 
-                            payload = location.getLatitude()+ " sdsdd " +location.getLongitude();
+                            Toast.makeText(vm,payload,Toast.LENGTH_LONG).show();
 
-                            MqttMessage message = new MqttMessage(payload.getBytes());
+                           MqttMessage message = new MqttMessage(payload.getBytes());
                             try {
                                 client.publish("test", message);
 //            return true;
@@ -115,6 +115,7 @@ public class LocationService extends IntentService {
             showNotification();
             Toast.makeText(this, "Service Started!", Toast.LENGTH_SHORT).show();
 
+
         } else if (intent.getAction().equals(Constants.ACTION.PREV_ACTION)) {
             Log.i(LOG_TAG, "Clicked Previous");
 
@@ -133,7 +134,11 @@ public class LocationService extends IntentService {
             Log.i(LOG_TAG, "Received Stop Foreground Intent");
             stopForeground(true);
             stopSelf();
-        }
+        }*/
+
+        Toast.makeText(this, "Clicked Next!", Toast.LENGTH_SHORT).show();
+        showNotification();
+
         return START_STICKY;
 
 

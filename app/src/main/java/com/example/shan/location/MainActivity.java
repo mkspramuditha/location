@@ -1,8 +1,10 @@
 package com.example.shan.location;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -10,15 +12,7 @@ import android.widget.TextView;
 
 import com.example.shan.location.DB.LocationDB;
 
-import org.eclipse.paho.android.service.MqttAndroidClient;
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
-
-import java.io.Serializable;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -91,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         //Toast.makeText(this,"before service",Toast.LENGTH_LONG).show();
 
 
+
     }
 
     public void clickedStartService(View view){
@@ -107,8 +102,17 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        startService(locationServiceIntent);
+//        startService(locationServiceIntent);
 
+        Calendar cal = Calendar.getInstance();
+        Intent intent = new Intent(this, LocationService.class);
+        PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
+
+        AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        // Start service every 20 seconds
+        alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
+                3000, pintent);
+        System.out.println("MainActivity finished");
     }
 
 
@@ -123,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void clickShowRecords(View view){
         txtRecords.setText("");
-        for(LocationRecord r:locationDB.getAllLocationRecords()){
+        for(LocationRecord r:locationDB.getPendingLocationRecords()){
             txtRecords.setText(txtRecords.getText()+"\n"+"lat:"+r.getLatitude()+", lon:"+r.getLongitude()+
             "time:"+r.getUpdated_time()+",user_id:"+r.getUser_id());
 

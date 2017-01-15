@@ -15,6 +15,12 @@ public class DB_helper extends SQLiteOpenHelper {
     private static final int db_version = 3;
 
     public static final String locations_table = "locations";
+    public static final String user_table = "user";
+
+    public static final String user_password = "password";
+    public static final String user_email = "email";
+    public static final String user_emi_no = "emi_no";
+
     public static final String user_id = "user_id";
     public static final String updated_time = "updated_time";
     public static final String latitude = "latitude";
@@ -41,13 +47,18 @@ public class DB_helper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String locations_table_query = String.format("CREATE TABLE %s(%s VARCHAR(20) NOT NULL ," +
                 "%s VARCHAR(30),%s FLOAT,%s FLOAT,%s INT);", locations_table,user_id,updated_time,latitude,longitude,sent_to_server);
+        String user_table_query=String.format("CREATE TABLE %s(%s VARCHAR(20),%s VARCHAR(30),%s VARCHAR(100),%s VARCHAR(20))"
+                ,user_table,user_id,user_emi_no,user_email,user_password);
 
+
+        db.execSQL(user_table_query);
         db.execSQL(locations_table_query);
         
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS " + user_table);
         db.execSQL("DROP TABLE IF EXISTS " + locations_table);
         onCreate(db);
     }

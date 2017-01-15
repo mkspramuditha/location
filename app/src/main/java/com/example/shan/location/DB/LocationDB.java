@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 
 import com.example.shan.location.LocationRecord;
+import com.example.shan.location.User;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -34,6 +35,26 @@ public class LocationDB {
         db_helper=DB_helper.getInstance(context);
     }
 
+//    return logged user iin the phone
+    public User getLoggedUser(){
+        SQLiteDatabase db=db_helper.getReadableDatabase();
+
+        String query = String.format("SELECT * FROM %s ;",db_helper.user_table);
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToNext())
+        {
+            return new User(cursor.getString(cursor.getColumnIndex(db_helper.user_id)),
+                    cursor.getString(cursor.getColumnIndex(db_helper.user_password)));
+        }
+
+        cursor.close();
+
+        return null;
+
+    }
+
     public void addLocation(Location location){
 
         SQLiteDatabase db=db_helper.getWritableDatabase();
@@ -51,26 +72,21 @@ public class LocationDB {
     }
 
 
-    public ArrayList<LocationRecord> getAllLocationRecords(){
+    public ArrayList<LocationRecord> getPendingLocationRecords(){
         ArrayList<LocationRecord> locationRecords=new ArrayList<>();
         SQLiteDatabase db=db_helper.getReadableDatabase();
 
-        String query = String.format("SELECT * FROM %s ;",db_helper.locations_table);
+        String query = String.format("SELECT * FROM %s WHERE %s=0;",db_helper.locations_table,DB_helper.sent_to_server);
 
         Cursor cursor = db.rawQuery(query, null);
 
         //add account objects to a list
         while (cursor.moveToNext())
         {
-            boolean sent_to_server=false;
-            if(cursor.getInt(cursor.getColumnIndex(db_helper.sent_to_server))==1){
-                sent_to_server=true;
-            }
-
             LocationRecord locationRecord=new LocationRecord(cursor.getString(cursor.getColumnIndex(db_helper.user_id)),
                     cursor.getString(cursor.getColumnIndex(db_helper.updated_time)),
                     cursor.getFloat(cursor.getColumnIndex(db_helper.latitude)),
-                    cursor.getFloat(cursor.getColumnIndex(db_helper.longitude)),sent_to_server);
+                    cursor.getFloat(cursor.getColumnIndex(db_helper.longitude)),false);
 
             locationRecords.add(locationRecord);
         }
