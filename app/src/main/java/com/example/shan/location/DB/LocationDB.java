@@ -77,14 +77,15 @@ public class LocationDB {
         ArrayList<LocationRecord> locationRecords=new ArrayList<>();
         SQLiteDatabase db=db_helper.getReadableDatabase();
 
-        String query = String.format("SELECT * FROM %s WHERE %s=0;",db_helper.locations_table,DB_helper.sent_to_server);
+        String query = String.format("SELECT * FROM %s;",db_helper.locations_table);
 
         Cursor cursor = db.rawQuery(query, null);
 
         //add account objects to a list
         while (cursor.moveToNext())
         {
-            LocationRecord locationRecord=new LocationRecord(cursor.getString(cursor.getColumnIndex(db_helper.user_id)),
+            LocationRecord locationRecord=new LocationRecord(
+                    cursor.getString(cursor.getColumnIndex(db_helper.user_id)),
                     cursor.getString(cursor.getColumnIndex(db_helper.updated_time)),
                     cursor.getFloat(cursor.getColumnIndex(db_helper.latitude)),
                     cursor.getFloat(cursor.getColumnIndex(db_helper.longitude)),false);
@@ -95,5 +96,12 @@ public class LocationDB {
         cursor.close();
 
         return locationRecords;
+    }
+
+    public void sentToServer(int record_id){
+        SQLiteDatabase db=db_helper.getWritableDatabase();
+        ContentValues cv=new ContentValues();
+        cv.put(db_helper.sent_to_server,1);
+        db.update(db_helper.locations_table,cv,db_helper.record_id+"="+record_id,null);
     }
 }

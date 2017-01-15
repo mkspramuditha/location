@@ -89,18 +89,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clickedStartService(View view){
-        locationServiceIntent=new Intent(this,LocationService.class);
-        Button button = (Button) view;
-        if (!LocationService.IS_SERVICE_RUNNING) {
-            locationServiceIntent.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
-            LocationService.IS_SERVICE_RUNNING = true;
-            button.setText("Stop Service");
-        } else {
-            locationServiceIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
-            LocationService.IS_SERVICE_RUNNING = false;
-            button.setText("Start Service");
-
-        }
 
 //        startService(locationServiceIntent);
 
@@ -111,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         // Start service every 20 seconds
         alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
-                3000, pintent);
+                30000, pintent);
         System.out.println("MainActivity finished");
     }
 
