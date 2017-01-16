@@ -11,12 +11,13 @@ public class LocationRecord {
     private String user_id;
     private boolean sent_to_server;
 
-    public LocationRecord(String user_id,String updated_time,float latitude, float longitude,boolean sent_to_server) {
+    public LocationRecord(int record_id,String user_id,String updated_time,float latitude, float longitude,boolean sent_to_server) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.updated_time = updated_time;
         this.user_id = user_id;
         this.sent_to_server=sent_to_server;
+        this.record_id=record_id;
     }
 
     public int getRecord_id() {

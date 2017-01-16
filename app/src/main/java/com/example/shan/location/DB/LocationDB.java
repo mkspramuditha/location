@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
+import android.widget.Toast;
 
 import com.example.shan.location.LocationRecord;
 import com.example.shan.location.User;
@@ -21,7 +22,6 @@ public class LocationDB {
     Context context;
     DB_helper db_helper;
 
-    boolean stopped=false;
 
     public static LocationDB getInstance(Context context){
         if(locationDB==null){
@@ -39,15 +39,15 @@ public class LocationDB {
     public User getLoggedUser(){
         SQLiteDatabase db=db_helper.getReadableDatabase();
 
-        String query = String.format("SELECT * FROM %s ;",db_helper.user_table);
+        String query = String.format("SELECT * FROM %s ;",DB_helper.user_table);
 
         Cursor cursor = db.rawQuery(query, null);
 
         if (cursor.moveToNext())
         {
-            return new User(cursor.getString(cursor.getColumnIndex(db_helper.user_id)),
-                    cursor.getString(cursor.getColumnIndex(db_helper.user_emi_no)),
-                    cursor.getString(cursor.getColumnIndex(db_helper.user_password)));
+            return new User(cursor.getString(cursor.getColumnIndex(DB_helper.user_id)),
+                    cursor.getString(cursor.getColumnIndex(DB_helper.user_emi_no)),
+                    cursor.getString(cursor.getColumnIndex(DB_helper.user_password)));
         }
 
         cursor.close();
@@ -61,15 +61,14 @@ public class LocationDB {
         SQLiteDatabase db=db_helper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(db_helper.user_id, "1");       //correct user id must be entered except 1
-        values.put(db_helper.updated_time, DateFormat.getDateTimeInstance().format(new Date()));       //DateFormat.getDateTimeInstance().format(new Date())
-        values.put(db_helper.latitude,location.getLatitude());
-        values.put(db_helper.longitude,location.getLongitude());
-        values.put(db_helper.sent_to_server,0);
+        values.put(DB_helper.user_id, "1");       //correct user id must be entered except 1
+        values.put(DB_helper.updated_time, DateFormat.getDateTimeInstance().format(new Date()));       //DateFormat.getDateTimeInstance().format(new Date())
+        values.put(DB_helper.latitude,location.getLatitude());
+        values.put(DB_helper.longitude,location.getLongitude());
+        values.put(DB_helper.sent_to_server,0);
+        long x=db.insert(DB_helper.locations_table, null, values);
 
-        db.insert(db_helper.locations_table, null, values);
-
-        //Toast.makeText(context, "loc added to db", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "loc added to db "+x, Toast.LENGTH_LONG).show();
     }
 
 
@@ -77,7 +76,7 @@ public class LocationDB {
         ArrayList<LocationRecord> locationRecords=new ArrayList<>();
         SQLiteDatabase db=db_helper.getReadableDatabase();
 
-        String query = String.format("SELECT * FROM %s;",db_helper.locations_table);
+        String query = String.format("SELECT * FROM %s WHERE %s=0;",DB_helper.locations_table,DB_helper.sent_to_server);
 
         Cursor cursor = db.rawQuery(query, null);
 
@@ -85,10 +84,12 @@ public class LocationDB {
         while (cursor.moveToNext())
         {
             LocationRecord locationRecord=new LocationRecord(
-                    cursor.getString(cursor.getColumnIndex(db_helper.user_id)),
-                    cursor.getString(cursor.getColumnIndex(db_helper.updated_time)),
-                    cursor.getFloat(cursor.getColumnIndex(db_helper.latitude)),
-                    cursor.getFloat(cursor.getColumnIndex(db_helper.longitude)),false);
+                    cursor.getInt(cursor.getColumnIndex(DB_helper.record_id)),
+                    cursor.getString(cursor.getColumnIndex(DB_helper.user_id)),
+                    cursor.getString(cursor.getColumnIndex(DB_helper.updated_time)),
+                    cursor.getFloat(cursor.getColumnIndex(DB_helper.latitude)),
+                    cursor.getFloat(cursor.getColumnIndex(DB_helper.longitude)),
+                    false);
 
             locationRecords.add(locationRecord);
         }
@@ -101,7 +102,7 @@ public class LocationDB {
     public void sentToServer(int record_id){
         SQLiteDatabase db=db_helper.getWritableDatabase();
         ContentValues cv=new ContentValues();
-        cv.put(db_helper.sent_to_server,1);
-        db.update(db_helper.locations_table,cv,db_helper.record_id+"="+record_id,null);
+        cv.put(DB_helper.sent_to_server,1);
+        db.update(DB_helper.locations_table,cv,DB_helper.record_id+"="+record_id,null);
     }
 }

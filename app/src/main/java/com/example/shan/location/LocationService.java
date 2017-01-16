@@ -67,6 +67,7 @@ public class LocationService extends IntentService {
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
+//
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
@@ -75,38 +76,38 @@ public class LocationService extends IntentService {
 
         payload = "test";
 
-//        Toast.makeText(vm,payload,Toast.LENGTH_LONG).show();
+        Toast.makeText(vm,payload,Toast.LENGTH_LONG).show();
 
-        //get logged user
+//        get logged user
 //        User user=locationDB.getLoggedUser();
 
 
-        //retrieve msges from db
+//        retrieve msges from db
 
         Toast.makeText(vm,locationDB.getPendingLocationRecords().size()+"",Toast.LENGTH_LONG).show();
 
-//        for (LocationRecord lr:locationDB.getPendingLocationRecords()) {
-//            JSONObject jsonObject=new JSONObject();
-//            try {
-//                jsonObject.put("imie", "1234");                       //user.getEmi()
-//                jsonObject.put("latitude",lr.getLatitude());
-//                jsonObject.put("longitude",lr.getLongitude());
-//                jsonObject.put("time",lr.getUpdated_time());
-//            }
-//            catch (JSONException e){}
-//            payload=jsonObject.toString();
-//
-//            //send mqqtt msg to server
-//            MqttMessage message = new MqttMessage(payload.getBytes());
-//            try {
-//                client.publish("test", message);
-//            } catch (MqttPersistenceException e) {
-//                e.printStackTrace();
-//            } catch (MqttException e) {
-//                e.printStackTrace();
-//            }
-////            locationDB.sentToServer(lr.getRecord_id());
-//        }
+        for (LocationRecord lr:locationDB.getPendingLocationRecords()) {
+            JSONObject jsonObject=new JSONObject();
+            try {
+                jsonObject.put("imie", "1234");                       //user.getEmi()
+                jsonObject.put("latitude",lr.getLatitude());
+                jsonObject.put("longitude",lr.getLongitude());
+                jsonObject.put("time",lr.getUpdated_time());
+            }
+            catch (JSONException e){}
+            payload=jsonObject.toString();
+
+            //send mqqtt msg to server
+            MqttMessage message = new MqttMessage(payload.getBytes());
+            try {
+                client.publish("test", message);
+            } catch (MqttPersistenceException e) {
+                e.printStackTrace();
+            } catch (MqttException e) {
+                e.printStackTrace();
+            }
+            locationDB.sentToServer(lr.getRecord_id());
+        }
 
         showNotification();
         return START_STICKY;

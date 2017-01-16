@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.shan.location.DB.LocationDB;
 
@@ -99,8 +100,8 @@ public class MainActivity extends AppCompatActivity {
         AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         // Start service every 20 seconds
         alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
-                30000, pintent);
-        System.out.println("MainActivity finished");
+                10000, pintent);
+        Toast.makeText(this,"clicked",Toast.LENGTH_LONG).show();
     }
 
 
