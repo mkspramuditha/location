@@ -92,16 +92,31 @@ public class MainActivity extends AppCompatActivity {
     public void clickedStartService(View view){
 
 //        startService(locationServiceIntent);
+        setLocationAlarm();
+        setMqttAlarm();
+    }
 
+
+    private void setLocationAlarm(){
         Calendar cal = Calendar.getInstance();
         Intent intent = new Intent(this, LocationService.class);
         PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
 
         AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        // Start service every 20 seconds
+        // Start service every 1 seconds
         alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
-                10000, pintent);
-        Toast.makeText(this,"clicked",Toast.LENGTH_LONG).show();
+                2*60000, pintent);
+    }
+
+    public void setMqttAlarm(){
+        Calendar cal = Calendar.getInstance();
+        Intent intent = new Intent(this, MqttSendService.class);
+        PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
+
+        AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        // Start service every 1 seconds
+        alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
+                2*60000, pintent);
     }
 
 

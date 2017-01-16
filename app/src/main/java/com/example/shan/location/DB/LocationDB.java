@@ -56,13 +56,13 @@ public class LocationDB {
 
     }
 
-    public void addLocation(Location location){
+    public void addLocation(Location location,String current_time){
 
         SQLiteDatabase db=db_helper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(DB_helper.user_id, "1");       //correct user id must be entered except 1
-        values.put(DB_helper.updated_time, DateFormat.getDateTimeInstance().format(new Date()));       //DateFormat.getDateTimeInstance().format(new Date())
+        values.put(DB_helper.updated_time, current_time);       //DateFormat.getDateTimeInstance().format(new Date())
         values.put(DB_helper.latitude,location.getLatitude());
         values.put(DB_helper.longitude,location.getLongitude());
         values.put(DB_helper.sent_to_server,0);

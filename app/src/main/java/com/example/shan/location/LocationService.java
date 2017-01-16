@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,6 +13,8 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -31,83 +34,37 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Time;
+import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 
-public class LocationService extends IntentService {
+public class LocationService extends Service {
 
     public static boolean IS_SERVICE_RUNNING = false;
 
     LocationManager locationManager;
     LocationDB locationDB;
 
-    Context vm;
-
     private static MqttClient client;
     String payload;
 
     public LocationService() {
-        super("LocationService");
         locationDB=LocationDB.getInstance(this);
-
-        try {
-            MemoryPersistence persistance = new MemoryPersistence();
-            client = new MqttClient("tcp://128.199.217.137:1883", "client1", persistance);
-            client.connect();
-
-        } catch (MqttException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        vm=this;
-
     }
+
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
-//
+        String current_time= DateFormat.getDateTimeInstance().format(new Date());
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         Location location=locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        locationDB.addLocation(location);
+        locationDB.addLocation(location,current_time);
 
-        payload = "test";
-
-        Toast.makeText(vm,payload,Toast.LENGTH_LONG).show();
-
-//        get logged user
-//        User user=locationDB.getLoggedUser();
-
-
-//        retrieve msges from db
-
-        Toast.makeText(vm,locationDB.getPendingLocationRecords().size()+"",Toast.LENGTH_LONG).show();
-
-        for (LocationRecord lr:locationDB.getPendingLocationRecords()) {
-            JSONObject jsonObject=new JSONObject();
-            try {
-                jsonObject.put("imie", "1234");                       //user.getEmi()
-                jsonObject.put("latitude",lr.getLatitude());
-                jsonObject.put("longitude",lr.getLongitude());
-                jsonObject.put("time",lr.getUpdated_time());
-            }
-            catch (JSONException e){}
-            payload=jsonObject.toString();
-
-            //send mqqtt msg to server
-            MqttMessage message = new MqttMessage(payload.getBytes());
-            try {
-                client.publish("test", message);
-            } catch (MqttPersistenceException e) {
-                e.printStackTrace();
-            } catch (MqttException e) {
-                e.printStackTrace();
-            }
-            locationDB.sentToServer(lr.getRecord_id());
-        }
+        Toast.makeText(this,current_time,Toast.LENGTH_LONG).show();
 
         showNotification();
         return START_STICKY;
@@ -161,12 +118,14 @@ public class LocationService extends IntentService {
 
 
     @Override
-    protected void onHandleIntent(Intent intent) {
-    }
-
-    @Override
     public void onDestroy() {
         Toast.makeText(this,"Location service stopped",Toast.LENGTH_LONG).show();
         super.onDestroy();
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 }

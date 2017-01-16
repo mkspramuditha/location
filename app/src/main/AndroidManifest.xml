@@ -28,7 +28,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".LoginActivity" />
-        <activity android:name=".LoggedActivity"></activity>
+        <activity android:name=".LoggedActivity" />
+
+        <service
+            android:name=".MqttSendService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
