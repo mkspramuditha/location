@@ -4,6 +4,8 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -33,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
         txtRecords=(TextView)findViewById(R.id.txtRecords);
 
         locationDB=LocationDB.getInstance(MainActivity.this);
-
 
 //        mqttAndroidClient = new MqttAndroidClient(this.getApplicationContext(), "tcp://128.199.217.137:1883",
 //                "androidSampleClient");
@@ -93,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
 //        startService(locationServiceIntent);
         setLocationAlarm();
+        Toast.makeText(this,"Location service started...",Toast.LENGTH_SHORT).show();
         setMqttAlarm();
     }
 
@@ -105,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         // Start service every 1 seconds
         alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
-                2*60000, pintent);
+                60000, pintent);
     }
 
     public void setMqttAlarm(){
@@ -116,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         // Start service every 1 seconds
         alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
-                2*60000, pintent);
+                60000, pintent);
     }
 
 

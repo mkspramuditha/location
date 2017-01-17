@@ -47,8 +47,6 @@ public class LocationService extends Service {
     LocationManager locationManager;
     LocationDB locationDB;
 
-    private static MqttClient client;
-    String payload;
 
     public LocationService() {
         locationDB=LocationDB.getInstance(this);
@@ -57,15 +55,53 @@ public class LocationService extends Service {
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
-        String current_time= DateFormat.getDateTimeInstance().format(new Date());
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-        Location location=locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        locationDB.addLocation(location,current_time);
+        boolean location_enabled=false;
+        try{
+            location_enabled=locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        }
+        catch (Exception e){}
 
-        Toast.makeText(this,current_time,Toast.LENGTH_LONG).show();
+        if(!location_enabled){
+            Toast.makeText(this,"Please enable the location...!",Toast.LENGTH_SHORT).show();
+        }
+        else {
+            String current_time = DateFormat.getDateTimeInstance().format(new Date());
 
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+
+                }
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                }
+
+                @Override
+                public void onProviderEnabled(String provider) {
+
+                }
+
+                @Override
+                public void onProviderDisabled(String provider) {
+
+                }
+            });
+
+            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            if(location!=null) {
+                locationDB.addLocation(location, current_time);
+
+                Toast.makeText(this, location.getLatitude()+"", Toast.LENGTH_LONG).show();
+            }
+            else {
+                Toast.makeText(this, "Cannot find location...!", Toast.LENGTH_LONG).show();
+            }
+        }
         showNotification();
         return START_STICKY;
 
@@ -98,7 +134,7 @@ public class LocationService extends Service {
                 R.drawable.ic_launcher);
 
         Notification notification = new NotificationCompat.Builder(this)
-                .setContentTitle("TutorialsFace Music Player")
+                .setContentTitle("Location")
                 .setTicker("TutorialsFace Music Player")
                 .setContentText("My song")
                 .setSmallIcon(R.drawable.ic_launcher)

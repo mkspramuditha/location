@@ -1,7 +1,10 @@
 package com.example.shan.location;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.widget.Toast;
 
@@ -49,34 +52,61 @@ public class MqttSendService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-//        get logged user
-//        User user=locationDB.getLoggedUser();
+
+          if(!isInternetConnected()){
+              Toast.makeText(this,"Please enable data or wifi...!",Toast.LENGTH_SHORT).show();
+          }
+          else{
+    //        get logged user
+    //        User user=locationDB.getLoggedUser();
 
 
-//        retrieve msges from db
-        for (LocationRecord lr:locationDB.getPendingLocationRecords()) {
-            JSONObject jsonObject=new JSONObject();
-            try {
-                jsonObject.put("imie", "1234");                       //user.getEmi()
-                jsonObject.put("latitude",lr.getLatitude());
-                jsonObject.put("longitude",lr.getLongitude());
-                jsonObject.put("time",lr.getUpdated_time());
+    //        retrieve msges from db
+            for (LocationRecord lr:locationDB.getPendingLocationRecords()) {
+                JSONObject jsonObject=new JSONObject();
+                try {
+                    jsonObject.put("imie", "1234");                       //user.getEmi()
+                    jsonObject.put("latitude",lr.getLatitude());
+                    jsonObject.put("longitude",lr.getLongitude());
+                    jsonObject.put("time",lr.getUpdated_time());
+                }
+                catch (JSONException e){}
+                payload=jsonObject.toString();
+
+                //send mqqtt msg to server
+                MqttMessage message = new MqttMessage(payload.getBytes());
+                try {
+                    client.publish("test", message);
+                } catch (MqttPersistenceException e) {
+                    e.printStackTrace();
+                } catch (MqttException e) {
+                    e.printStackTrace();
+                }
+                locationDB.sentToServer(lr.getRecord_id());
+                Toast.makeText(this,"sent to server",Toast.LENGTH_SHORT).show();
             }
-            catch (JSONException e){}
-            payload=jsonObject.toString();
-
-            //send mqqtt msg to server
-            MqttMessage message = new MqttMessage(payload.getBytes());
-            try {
-                client.publish("test", message);
-            } catch (MqttPersistenceException e) {
-                e.printStackTrace();
-            } catch (MqttException e) {
-                e.printStackTrace();
-            }
-            locationDB.sentToServer(lr.getRecord_id());
-            Toast.makeText(this,"sent to server",Toast.LENGTH_SHORT).show();
-        }
+          }
         return START_STICKY;
     }
+
+    private boolean isInternetConnected () {
+        ConnectivityManager connectivityMgr = (ConnectivityManager) this
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifi = connectivityMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        NetworkInfo mobile = connectivityMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        // Check if wifi or mobile network is available or not. If any of them is
+        // available or connected then it will return true, otherwise false;
+        if (wifi != null) {
+            if (wifi.isConnected()) {
+                return true;
+            }
+        }
+        if (mobile != null) {
+            if (mobile.isConnected()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
