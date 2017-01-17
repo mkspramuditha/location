@@ -316,7 +316,9 @@
                                     android:scaleType="fitCenter"
                                     android:background="@android:color/transparent"
                                     style="?android:attr/borderlessButtonStyle"
-                                    android:layout_weight="1" />
+                                    android:layout_weight="1"
+                                    android:onClick="RegButtonClicked"
+                                    />
 
                                 <ProgressBar
                                     android:id="@+id/progressBar1"
