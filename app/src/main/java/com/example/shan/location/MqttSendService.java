@@ -53,20 +53,13 @@ public class MqttSendService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-          if(client==null){
-              try {
-                  MemoryPersistence persistance = new MemoryPersistence();
-                  client = new MqttClient("tcp://128.199.217.137:1883", "client1", persistance);
-                  client.connect();
+        try {
+            client.connect();
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
 
-              } catch (MqttException e) {
-                  e.printStackTrace();
-              } catch (Exception e) {
-                  e.printStackTrace();
-              }
-          }
-
-          if(!isInternetConnected()){
+        if(!isInternetConnected()){
               Toast.makeText(this,"Please enable data or wifi...!",Toast.LENGTH_SHORT).show();
           }
           else{

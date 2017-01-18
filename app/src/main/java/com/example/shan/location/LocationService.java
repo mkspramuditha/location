@@ -134,19 +134,14 @@ public class LocationService extends Service {
                 R.drawable.ic_launcher);
 
         Notification notification = new NotificationCompat.Builder(this)
-                .setContentTitle("Location")
+                .setContentTitle("Route Radar Tracker")
                 .setTicker("TutorialsFace Music Player")
-                .setContentText("My song")
+                .setContentText("Tracking...")
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
                 .setContentIntent(pendingIntent)
                 .setOngoing(true)
-                .addAction(android.R.drawable.ic_media_previous, "Previous",
-                        ppreviousIntent)
-                .addAction(android.R.drawable.ic_media_play, "Play",
-                        pplayIntent)
-                .addAction(android.R.drawable.ic_media_next, "Next",
-                        pnextIntent).build();
+                .build();
         startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE,
                 notification);
 
