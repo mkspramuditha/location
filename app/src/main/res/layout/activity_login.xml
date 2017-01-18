@@ -317,7 +317,6 @@
                                     android:background="@android:color/transparent"
                                     style="?android:attr/borderlessButtonStyle"
                                     android:layout_weight="1"
-                                    android:onClick="RegButtonClicked"
                                     />
 
                                 <ProgressBar

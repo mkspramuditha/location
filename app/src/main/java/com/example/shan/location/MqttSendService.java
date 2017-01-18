@@ -53,6 +53,19 @@ public class MqttSendService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
+          if(client==null){
+              try {
+                  MemoryPersistence persistance = new MemoryPersistence();
+                  client = new MqttClient("tcp://128.199.217.137:1883", "client1", persistance);
+                  client.connect();
+
+              } catch (MqttException e) {
+                  e.printStackTrace();
+              } catch (Exception e) {
+                  e.printStackTrace();
+              }
+          }
+
           if(!isInternetConnected()){
               Toast.makeText(this,"Please enable data or wifi...!",Toast.LENGTH_SHORT).show();
           }
@@ -65,7 +78,7 @@ public class MqttSendService extends Service {
             for (LocationRecord lr:locationDB.getPendingLocationRecords()) {
                 JSONObject jsonObject=new JSONObject();
                 try {
-                    jsonObject.put("imie", "1234");                       //user.getEmi()
+                    jsonObject.put("imie", lr.getEmi_no());
                     jsonObject.put("latitude",lr.getLatitude());
                     jsonObject.put("longitude",lr.getLongitude());
                     jsonObject.put("time",lr.getUpdated_time());

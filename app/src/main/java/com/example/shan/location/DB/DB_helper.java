@@ -12,7 +12,7 @@ public class DB_helper extends SQLiteOpenHelper {
     //database and table attributes
     protected static final String db_name = "location_db";
     private static DB_helper db_helper = null;
-    private static final int db_version = 8;
+    private static final int db_version = 9;
 
     public static final String record_id = "record_id";
 
@@ -47,8 +47,8 @@ public class DB_helper extends SQLiteOpenHelper {
     //create account and transaction tables
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String locations_table_query = String.format("CREATE TABLE %s(%s INTEGER PRIMARY KEY,%s VARCHAR(20) NOT NULL ," +
-                "%s VARCHAR(30),%s FLOAT,%s FLOAT,%s INT);", locations_table,record_id, username,updated_time,latitude,longitude,sent_to_server);
+        String locations_table_query = String.format("CREATE TABLE %s(%s INTEGER PRIMARY KEY,%s VARCHAR(30) NOT NULL ," +
+                "%s VARCHAR(30),%s FLOAT,%s FLOAT,%s INT);", locations_table,record_id, user_emi_no,updated_time,latitude,longitude,sent_to_server);
 
         String user_table_query=String.format("CREATE TABLE %s(%s VARCHAR(20),%s VARCHAR(30),%s VARCHAR(100),%s VARCHAR(20));"
                 ,user_table, username,user_emi_no,user_email,user_password);

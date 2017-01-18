@@ -8,14 +8,14 @@ public class LocationRecord {
     private float latitude;
     private float longitude;
     private String updated_time;
-    private String user_id;
+    private String emi_no;
     private boolean sent_to_server;
 
-    public LocationRecord(int record_id,String user_id,String updated_time,float latitude, float longitude,boolean sent_to_server) {
+    public LocationRecord(int record_id,String emi_no,String updated_time,float latitude, float longitude,boolean sent_to_server) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.updated_time = updated_time;
-        this.user_id = user_id;
+        this.emi_no = emi_no;
         this.sent_to_server=sent_to_server;
         this.record_id=record_id;
     }
@@ -36,8 +36,8 @@ public class LocationRecord {
         return updated_time;
     }
 
-    public String getUser_id() {
-        return user_id;
+    public String getEmi_no() {
+        return emi_no;
     }
 
     public boolean isSent_to_server() {
