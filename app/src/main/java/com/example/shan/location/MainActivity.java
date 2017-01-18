@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
         txtRecords.setText("");
         for(LocationRecord r:locationDB.getPendingLocationRecords()){
             txtRecords.setText(txtRecords.getText()+"\n"+"lat:"+r.getLatitude()+", lon:"+r.getLongitude()+
-            "time:"+r.getUpdated_time()+",user_id:"+r.getUser_id());
+            "time:"+r.getUpdated_time()+",username:"+r.getUser_id());
 
         }
 

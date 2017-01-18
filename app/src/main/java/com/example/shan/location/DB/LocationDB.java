@@ -10,9 +10,7 @@ import android.widget.Toast;
 import com.example.shan.location.LocationRecord;
 import com.example.shan.location.User;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Created by Chamod on 12/13/2016.
@@ -37,22 +35,39 @@ public class LocationDB {
 
 //    return logged user iin the phone
     public User getLoggedUser(){
-        SQLiteDatabase db=db_helper.getReadableDatabase();
 
-        String query = String.format("SELECT * FROM %s ;",DB_helper.user_table);
+//        added only for testing
+        return new User("Shan","1234555600","pass");
 
-        Cursor cursor = db.rawQuery(query, null);
+//        SQLiteDatabase db=db_helper.getReadableDatabase();
+//
+//        String query = String.format("SELECT * FROM %s ;",DB_helper.user_table);
+//
+//        Cursor cursor = db.rawQuery(query, null);
+//
+//        if (cursor.moveToNext())
+//        {
+//            return new User(cursor.getString(cursor.getColumnIndex(DB_helper.username)),
+//                    cursor.getString(cursor.getColumnIndex(DB_helper.user_emi_no)),
+//                    cursor.getString(cursor.getColumnIndex(DB_helper.user_password)));
+//        }
+//
+//        cursor.close();
+//
+//        return null;
 
-        if (cursor.moveToNext())
-        {
-            return new User(cursor.getString(cursor.getColumnIndex(DB_helper.user_id)),
-                    cursor.getString(cursor.getColumnIndex(DB_helper.user_emi_no)),
-                    cursor.getString(cursor.getColumnIndex(DB_helper.user_password)));
-        }
+    }
 
-        cursor.close();
+    public void setUser(String username,String emi,String email,String password){
+        SQLiteDatabase db=db_helper.getWritableDatabase();
+        ContentValues cv=new ContentValues();
+        cv.put(DB_helper.username,username);
+        cv.put(DB_helper.user_emi_no,emi);
+        cv.put(DB_helper.user_email,email);
+        cv.put(DB_helper.user_password,password);
+        long x=db.insert(DB_helper.user_table, null, cv);
 
-        return null;
+        Toast.makeText(context, "user added to db "+x, Toast.LENGTH_LONG).show();
 
     }
 
@@ -61,7 +76,7 @@ public class LocationDB {
         SQLiteDatabase db=db_helper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(DB_helper.user_id, "1");       //correct user id must be entered except 1
+        values.put(DB_helper.username, getLoggedUser().getUsername());
         values.put(DB_helper.updated_time, current_time);       //DateFormat.getDateTimeInstance().format(new Date())
         values.put(DB_helper.latitude,location.getLatitude());
         values.put(DB_helper.longitude,location.getLongitude());
@@ -85,7 +100,7 @@ public class LocationDB {
         {
             LocationRecord locationRecord=new LocationRecord(
                     cursor.getInt(cursor.getColumnIndex(DB_helper.record_id)),
-                    cursor.getString(cursor.getColumnIndex(DB_helper.user_id)),
+                    cursor.getString(cursor.getColumnIndex(DB_helper.username)),
                     cursor.getString(cursor.getColumnIndex(DB_helper.updated_time)),
                     cursor.getFloat(cursor.getColumnIndex(DB_helper.latitude)),
                     cursor.getFloat(cursor.getColumnIndex(DB_helper.longitude)),

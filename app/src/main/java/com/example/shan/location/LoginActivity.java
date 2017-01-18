@@ -1,6 +1,7 @@
 package com.example.shan.location;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +14,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.shan.location.DB.LocationDB;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,11 +23,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
-
+    LocationDB locationDB;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        locationDB=LocationDB.getInstance(this);
+
+//        Check whether logged
+        User loggedUser=locationDB.getLoggedUser();
+        if(loggedUser==null){
+            Toast.makeText(this,"Please Login...!",Toast.LENGTH_LONG).show();
+        }
+        else{
+            Intent intent=new Intent(this,LoggedActivity.class);
+//        pass username and password variables
+            intent.putExtra("var_username",loggedUser.getUsername());//correct to the response username
+            intent.putExtra("var_password",loggedUser.getPassword());//correct to the response username
+
+            startActivity(intent);
+        }
     }
 
 
@@ -54,6 +71,7 @@ public class LoginActivity extends AppCompatActivity {
 //                        Handle the response json object
                         try {
                             Toast.makeText(LoginActivity.this,response.getString("data"),Toast.LENGTH_LONG).show();
+                            logUser(response);
                         }
                         catch (JSONException e){}
                         pDialog.hide();
@@ -62,6 +80,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
+//                Correct this to login failed msg
                 Toast.makeText(LoginActivity.this, error.getMessage(),Toast.LENGTH_SHORT).show();
                 pDialog.hide();
             }
@@ -73,5 +92,20 @@ public class LoginActivity extends AppCompatActivity {
         requestQueue.add(jsonObjReq);
 
     }
+
+
+    private void logUser(JSONObject response){
+//        Add to databaase
+//        locationDB.setUser();
+
+
+        Intent intent=new Intent(this,LoggedActivity.class);
+//        pass username and password variables
+        intent.putExtra("var_username","Chamod");//correct to the response username
+        intent.putExtra("var_password","1234");//correct to the response username
+
+        startActivity(intent);
+    }
+
 
 }
