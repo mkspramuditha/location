@@ -4,9 +4,12 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -14,11 +17,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.shan.location.DB.LocationDB;
 import com.google.android.gms.auth.api.Auth;
@@ -32,6 +38,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -97,53 +104,94 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
 
     public void getServerAuthentication(final String email) {
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-//        Posting server url
-        String url = "https://httpbin.org/post";
+        final RequestQueue requestQueue = Volley.newRequestQueue(this);
 
         final ProgressDialog pDialog = new ProgressDialog(this);
         pDialog.setMessage("Connecting to server...");
         pDialog.show();
 
-//Posting parameters
-        Map<String, String> params = new HashMap<>();
-        params.put("custname", "Chamod");
-        params.put("custtel", "07122222");
-        params.put("custemail", "eeeee");
+
 //               test emi
         TelephonyManager tm=(TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         final String emi_no=tm.getDeviceId();
+//
+        final JSONObject jsonObject=new JSONObject();
+        try {
+            jsonObject.put("imie",emi_no);
+            jsonObject.put("appId","1234");                         //set correct app id and service provider
+            jsonObject.put("serviceProvider","Dialog");
+            jsonObject.put("email",email);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
 
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
-                url, new JSONObject(params),
-                new Response.Listener<JSONObject>() {
 
-                    @Override
-                    public void onResponse(JSONObject response) {
-//                        Handle the response json object
-                        try {
-                            Toast.makeText(LoginActivity.this, response.getString("data"), Toast.LENGTH_LONG).show();
-                            logUser(email,emi_no,"Chamod","1234");                                     //response.getString("username"),response.getString("password")
-                        } catch (JSONException e) {
-                        }
-                        pDialog.hide();
-                    }
-                }, new Response.ErrorListener() {
+        String URL = "http://128.199.173.183/routeradar/web/app_dev.php/client-app-all/registration";
 
+        final String mRequestBody = jsonObject.toString();
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.i("VOLLEY", response);
+                try {
+                    JSONObject j=new JSONObject(response.split("abc\"")[1]);
+
+                    Toast.makeText(LoginActivity.this,j.toString() ,Toast.LENGTH_LONG).show();
+                    logUser(email,emi_no,j.getString("username"),j.getString("password"));
+
+                    pDialog.hide();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-//                Correct this to login failed msg
-                Toast.makeText(LoginActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+//                Log.e("VOLLEY", error.getLocalizedMessage());
+                Toast.makeText(LoginActivity.this,"Login Failed...!",Toast.LENGTH_LONG).show();
                 pDialog.hide();
+
             }
         }) {
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                try {
+                    return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                } catch (UnsupportedEncodingException uee) {
+                    Log.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
+                            mRequestBody);
+                    return null;
+                }
+
+            }
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                String creds = String.format("%s:%s", "xxxxxx", "xxxxxxxxxxxxxx");
+                String auth = "Basic " + Base64.encodeToString(creds.getBytes(), Base64.DEFAULT);
+                headers.put("Authorization", auth);
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+
 
         };
 
-// Adding request to request queue
-        requestQueue.add(jsonObjReq);
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                30000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
+
+// Adding request to request queue
+        requestQueue.add(stringRequest);
     }
 
 
@@ -164,6 +212,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 //        Toast.makeText(this,resultCode+"",Toast.LENGTH_LONG).show();
+
         if (requestCode == REQUEST_CODE) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             GoogleSignInAccount account = result.getSignInAccount();
@@ -184,7 +233,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 getServerAuthentication(acct.getEmail());
 
             } else {
-                Toast.makeText(getApplicationContext(), "Testing Toast", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Registartion Failed...!", Toast.LENGTH_LONG).show();
             }
 
         }
