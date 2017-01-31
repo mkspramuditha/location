@@ -80,7 +80,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         //for google sign in
 
-        signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+//                .requestIdToken("323274238722-b4icv9t7qdgphhfqac3fuec8kdp9cl5k.apps.googleusercontent.com")
+                .build();
 
         googleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, this).addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions).build();
         login = (ImageButton) findViewById(R.id.regbtn);
