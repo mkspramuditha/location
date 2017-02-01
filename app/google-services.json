@@ -1,72 +1,25 @@
 {
   "project_info": {
-    "project_number": "323274238722",
-    "project_id": "myapplication-a3a67"
+    "project_number": "211698826855",
+    "project_id": "route-radar-157412"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:323274238722:android:d8780c7676aa686a",
-        "android_client_info": {
-          "package_name": "com.example.shan.myapplication"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "323274238722-b4icv9t7qdgphhfqac3fuec8kdp9cl5k.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.shan.myapplication",
-            "certificate_hash": "C8FB22AC05CDA27BFF311525F58B793BF70442A8"
-          }
-        },
-        {
-          "client_id": "323274238722-jvo9hs0e6o39gk1dgsui7hqj7e8fm4ic.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyB4hp4CHoIXU8DJP8PopIgowh3QGLD6beg"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 1
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:323274238722:android:16b2129c33a9d8ce",
+        "mobilesdk_app_id": "1:211698826855:android:16b2129c33a9d8ce",
         "android_client_info": {
           "package_name": "com.example.shan.location"
         }
       },
       "oauth_client": [
         {
-          "client_id": "323274238722-e5squc04t3kmvtplk9mps13i6kptie8v.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.shan.location",
-            "certificate_hash": "C8FB22AC05CDA27BFF311525F58B793BF70442A8"
-          }
-        },
-        {
-          "client_id": "323274238722-jvo9hs0e6o39gk1dgsui7hqj7e8fm4ic.apps.googleusercontent.com",
+          "client_id": "211698826855-7ddeubmpav5qq2c5p1drvpsjdki4f4bj.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB4hp4CHoIXU8DJP8PopIgowh3QGLD6beg"
+          "current_key": "AIzaSyDrNqcbpIi4G4joP-2EQyHQadqlPjzMqhI"
         }
       ],
       "services": {
