@@ -134,15 +134,18 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.i("VOLLEY", response);
+//                Log.i("VOLLEY", response);
                 try {
-                    JSONObject j=new JSONObject(response.split("abc\"")[1]);
+                    JSONObject j=new JSONObject(response);
 
-                    Toast.makeText(LoginActivity.this,j.toString() ,Toast.LENGTH_LONG).show();
+//                    Toast.makeText(LoginActivity.this,j.toString() ,Toast.LENGTH_LONG).show();
                     logUser(email,emi_no,j.getString("username"),j.getString("password"));
 
                     pDialog.hide();
                 } catch (Exception e) {
+                    pDialog.hide();
+                    Toast.makeText(LoginActivity.this,"Login Failed...!" ,Toast.LENGTH_LONG).show();
+
                     e.printStackTrace();
                 }
 
