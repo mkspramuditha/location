@@ -108,7 +108,7 @@ public class LocationService extends Service {
     }
 
     private void showNotification() {
-        Intent notificationIntent = new Intent(this, LoggedActivity.class);
+        Intent notificationIntent = new Intent(this, NotificationActivity.class);
         notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
