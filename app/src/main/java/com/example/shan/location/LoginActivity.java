@@ -1,9 +1,14 @@
 package com.example.shan.location;
 
+import android.*;
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -44,6 +49,8 @@ import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
+    private final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE=1;
+
     private ProgressBar progressBar1;
 
     private static final int REQUEST_CODE = 100;
@@ -62,6 +69,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         progressBar1=(ProgressBar) findViewById(R.id.progressBar1);
         progressBar1.setVisibility(View.INVISIBLE);
 
+        login = (ImageButton) findViewById(R.id.regbtn);
+
+
         locationDB = LocationDB.getInstance(this);
 
 //        Check whether logged
@@ -78,6 +88,25 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }
 
 
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //get permission to read phone state
+                if(ActivityCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.READ_PHONE_STATE)
+                        != PackageManager.PERMISSION_GRANTED){
+                    requestReadPhoneStatePermission();
+                }
+
+                progressBar1.setVisibility(View.VISIBLE);
+            }
+        });
+
+
+    }
+
+    private void signIn(){
+
+
         //for google sign in
 
         signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -86,22 +115,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .build();
 
         googleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, this).addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions).build();
-        login = (ImageButton) findViewById(R.id.regbtn);
-//        name = (TextView) findViewById(R.id.name);
 
-//        login.setScrollBarSize(SignInButton.SIZE_WIDE);
-//        login.setScopes(signInOptions.getScopeArray());
 
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-                startActivityForResult(signInIntent, REQUEST_CODE);
-
-                progressBar1.setVisibility(View.VISIBLE);
-            }
-        });
-
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+        startActivityForResult(signInIntent, REQUEST_CODE);
 
     }
 
@@ -141,13 +158,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 try {
                     JSONObject j=new JSONObject(response);
 
-//                    Toast.makeText(LoginActivity.this,j.toString() ,Toast.LENGTH_LONG).show();
                     logUser(email,emi_no,j.getString("username"),j.getString("password"));
 
                     pDialog.hide();
                 } catch (Exception e) {
                     pDialog.hide();
-                    Toast.makeText(LoginActivity.this,"Login Failed...!" ,Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this,"Login Failed...!" ,Toast.LENGTH_SHORT).show();
 
                     e.printStackTrace();
                 }
@@ -157,7 +173,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             @Override
             public void onErrorResponse(VolleyError error) {
 //                Log.e("VOLLEY", error.getLocalizedMessage());
-                Toast.makeText(LoginActivity.this,"Login Failed...!",Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this,"Login Failed...!",Toast.LENGTH_SHORT).show();
                 pDialog.hide();
 
             }
@@ -217,7 +233,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-//        Toast.makeText(this,resultCode+"",Toast.LENGTH_LONG).show();
 
         if (requestCode == REQUEST_CODE) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
@@ -231,7 +246,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 //                idToken = acct.getIdToken();
 //                personEmail = acct.getEmail();
                 System.out.println("Your Email is: " + acct.getEmail());
-                Toast.makeText(getApplicationContext(), acct.getEmail() + "", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), acct.getEmail() + "", Toast.LENGTH_SHORT).show();
                 //after google sign in success read permissions
 //                checkReadPhoneStatePermission();
 
@@ -239,7 +254,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 getServerAuthentication(acct.getEmail());
 
             } else {
-                Toast.makeText(getApplicationContext(), "Registartion Failed...!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Registartion Failed...!", Toast.LENGTH_SHORT).show();
             }
 
         }
@@ -250,5 +265,63 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    /**
+     * Requests the READ_PHONE_STATE permission.
+     * If the permission has been denied previously, a dialog will prompt the user to grant the
+     * permission, otherwise it is requested directly.
+     */
+    private void requestReadPhoneStatePermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                android.Manifest.permission.READ_PHONE_STATE)) {
+            // Provide an additional rationale to the user if the permission was not granted
+            // and the user would benefit from additional context for the use of the permission.
+            // For example if the user has previously denied the permission.
+            new AlertDialog.Builder(LoginActivity.this)
+                    .setTitle("Warning!")
+                    .setMessage("Do you want to track this device, Please allow the permission request")
+                    .setCancelable(false)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener(){
+                        public void onClick(DialogInterface dialog, int which) {
+                            //re-request
+                            ActivityCompat.requestPermissions(LoginActivity.this,
+                                    new String[]{Manifest.permission.READ_PHONE_STATE},
+                                    MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
+                        }
+                    })
+                    .show();
+        } else {
+            // READ_PHONE_STATE permission has not been granted yet. Request it directly.
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_PHONE_STATE},
+                    MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_PHONE_STATE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    signIn();
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    progressBar1.setVisibility(View.INVISIBLE);
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 }

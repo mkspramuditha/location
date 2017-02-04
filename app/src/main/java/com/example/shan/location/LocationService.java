@@ -1,11 +1,8 @@
 package com.example.shan.location;
 
-import android.app.AlarmManager;
-import android.app.IntentService;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,33 +13,17 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
+
 import android.widget.Toast;
 
 import com.example.shan.location.DB.LocationDB;
 
-import org.eclipse.paho.android.service.MqttAndroidClient;
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.sql.Time;
 import java.text.DateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 
 public class LocationService extends Service {
 
-    public static boolean IS_SERVICE_RUNNING = false;
 
     LocationManager locationManager;
     LocationDB locationDB;
@@ -69,7 +50,7 @@ public class LocationService extends Service {
         }
         else {
             String current_time = DateFormat.getDateTimeInstance().format(new Date());
-
+        try {
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
@@ -91,15 +72,20 @@ public class LocationService extends Service {
 
                 }
             });
-
-            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            if(location!=null) {
-                locationDB.addLocation(location, current_time);
-
-                Toast.makeText(this, location.getLatitude()+"", Toast.LENGTH_LONG).show();
+        }
+        catch (SecurityException e){
+            Toast.makeText(this,"Location permissions need to be granted...!",Toast.LENGTH_SHORT).show();
+        }
+            try {
+                Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                if (location != null) {
+                    locationDB.addLocation(location, current_time);
+                } else {
+                    Toast.makeText(this, "Cannot find location...!", Toast.LENGTH_LONG).show();
+                }
             }
-            else {
-                Toast.makeText(this, "Cannot find location...!", Toast.LENGTH_LONG).show();
+            catch (SecurityException e){
+                Toast.makeText(this,"Location permissions need to be granted...!",Toast.LENGTH_SHORT).show();
             }
         }
         showNotification();

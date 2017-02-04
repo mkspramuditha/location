@@ -8,7 +8,7 @@ android {
     defaultConfig {
         applicationId "com.example.shan.location"
         minSdkVersion 19
-        targetSdkVersion 19
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -31,7 +31,6 @@ repositories {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -50,7 +49,6 @@ dependencies {
         compile 'com.google.android.gms:play-services-auth:9.0.0'
 
     }
-
 }
 
 

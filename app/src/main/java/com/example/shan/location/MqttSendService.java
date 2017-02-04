@@ -63,10 +63,6 @@ public class MqttSendService extends Service {
               Toast.makeText(this,"Please enable data or wifi...!",Toast.LENGTH_SHORT).show();
           }
           else{
-    //        get logged user
-    //        User user=locationDB.getLoggedUser();
-
-
     //        retrieve msges from db
             for (LocationRecord lr:locationDB.getPendingLocationRecords()) {
                 JSONObject jsonObject=new JSONObject();

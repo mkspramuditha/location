@@ -72,9 +72,7 @@ public class LocationDB {
         cv.put(DB_helper.user_emi_no,emi);
         cv.put(DB_helper.user_email,email);
         cv.put(DB_helper.user_password,password);
-        long x=db.insert(DB_helper.user_table, null, cv);
-
-        Toast.makeText(context, "User registration is successful...!", Toast.LENGTH_LONG).show();
+        db.insert(DB_helper.user_table, null, cv);
 
     }
 
@@ -88,7 +86,7 @@ public class LocationDB {
         values.put(DB_helper.latitude,location.getLatitude());
         values.put(DB_helper.longitude,location.getLongitude());
         values.put(DB_helper.sent_to_server,0);
-        long x=db.insert(DB_helper.locations_table, null, values);
+        db.insert(DB_helper.locations_table, null, values);
 
         Toast.makeText(context, "Location added to the database", Toast.LENGTH_LONG).show();
     }
