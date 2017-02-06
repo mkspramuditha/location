@@ -30,7 +30,6 @@ public class LoggedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logged);
 
-        checkLocationPermissions();
 
 
         locationDB= LocationDB.getInstance(LoggedActivity.this);
@@ -44,7 +43,10 @@ public class LoggedActivity extends AppCompatActivity {
         ((TextView)findViewById(R.id.password)).setText(var_password);
 
 //        Start Services
-//        startLocationService();
+        if(checkLocationPermissions())
+        {
+            startLocationService();
+        }
 
     }
 
@@ -68,7 +70,7 @@ public class LoggedActivity extends AppCompatActivity {
         PendingIntent pintent = PendingIntent.getService(this, 10, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        // Start service every 1 seconds
+        // Start service every 1 minute
         alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
                 60000, pintent);
     }
@@ -85,17 +87,20 @@ public class LoggedActivity extends AppCompatActivity {
     }
 
 
-    private void checkLocationPermissions(){
+    private boolean checkLocationPermissions(){
         if(ActivityCompat.checkSelfPermission(LoggedActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED){
             requestFineLocationPermission();
+            return false;
         }
 
 
         if(ActivityCompat.checkSelfPermission(LoggedActivity.this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED){
             requestCoarseLocationPermission();
+            return false;
         }
+        return true;
     }
 
     /**
