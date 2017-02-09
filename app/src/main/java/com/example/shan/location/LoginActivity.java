@@ -96,6 +96,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         != PackageManager.PERMISSION_GRANTED){
                     requestReadPhoneStatePermission();
                 }
+                else{
+                    signIn();
+                }
 
                 progressBar1.setVisibility(View.VISIBLE);
             }
