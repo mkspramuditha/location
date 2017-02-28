@@ -21,10 +21,16 @@ import java.util.Calendar;
 
 public class LoggedActivity extends AppCompatActivity {
 
+
+    public static final long REPEAT_TIME=5*60*1000;
+
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 0;
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 0;
 
     LocationDB locationDB;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,14 +71,15 @@ public class LoggedActivity extends AppCompatActivity {
 
 
     private void setLocationAlarm(){
-        Calendar cal = Calendar.getInstance();
+//        Calendar cal = Calendar.getInstance();
         Intent intent = new Intent(this, LocationService.class);
-        PendingIntent pintent = PendingIntent.getService(this, 10, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent location_pending_intent = PendingIntent.getService(this, 0, intent, 0);
 
         AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         // Start service every 1 minute
-        alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
-                60000, pintent);
+//        alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
+//                REPEAT_TIME, location_pending_intent);
+        alarm.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), location_pending_intent);
     }
 
     public void setMqttAlarm(){

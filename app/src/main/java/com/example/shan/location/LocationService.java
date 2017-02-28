@@ -1,8 +1,10 @@
 package com.example.shan.location;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,118 +28,43 @@ import java.util.Date;
 public class LocationService extends Service {
 
 
-    LocationManager locationManager;
+
     LocationDB locationDB;
+    LocationTracker locationTracker;
 
-
-    boolean isGPSEnabled=false,isNetworkEnabled=false;
 
     public LocationService() {
         locationDB=LocationDB.getInstance(this);
     }
 
 
+
+
+
     @Override
-    public int onStartCommand(final Intent intent, int flags, int startId) {
+    public void onStart(Intent intent, int startId) {
+        super.onStart(intent, startId);
 
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        locationTracker=new LocationTracker(this);
 
-
-        try{
-            isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-            isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        }
-        catch (Exception e){
-            Log.e("error:",e.toString());
-        }
-
-        if(!isGPSEnabled && !isNetworkEnabled){
-            Toast.makeText(this,"Please enable the location...!",Toast.LENGTH_SHORT).show();
-        }
-
-        else if(isNetworkEnabled){
+        Location location = locationTracker.getLocation();
+        if (location != null) {
             String current_time = DateFormat.getDateTimeInstance().format(new Date());
-            try {
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new LocationListener() {
-                    @Override
-                    public void onLocationChanged(Location location) {
-
-                    }
-
-                    @Override
-                    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-                    }
-
-                    @Override
-                    public void onProviderEnabled(String provider) {
-
-                    }
-
-                    @Override
-                    public void onProviderDisabled(String provider) {
-
-                    }
-                });
-            }
-            catch (SecurityException e){
-                Toast.makeText(this,"Location permissions need to be granted...!",Toast.LENGTH_SHORT).show();
-            }
-                try {
-                    Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                    if (location != null) {
-                        locationDB.addLocation(location, current_time);
-                    } else {
-                        Toast.makeText(this, "Cannot find location...!", Toast.LENGTH_LONG).show();
-                    }
-                }
-                catch (SecurityException e){
-                    Toast.makeText(this,"Location permissions need to be granted...!",Toast.LENGTH_SHORT).show();
-                }
-        }
-        else{
-            String current_time = DateFormat.getDateTimeInstance().format(new Date());
-            try {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new LocationListener() {
-                    @Override
-                    public void onLocationChanged(Location location) {
-
-                    }
-
-                    @Override
-                    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-                    }
-
-                    @Override
-                    public void onProviderEnabled(String provider) {
-
-                    }
-
-                    @Override
-                    public void onProviderDisabled(String provider) {
-
-                    }
-                });
-            }
-            catch (SecurityException e){
-                Toast.makeText(this,"Location permissions need to be granted...!",Toast.LENGTH_SHORT).show();
-            }
-            try {
-                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                if (location != null) {
-                    locationDB.addLocation(location, current_time);
-                } else {
-                    Toast.makeText(this, "Cannot find location...!", Toast.LENGTH_LONG).show();
-                }
-            }
-            catch (SecurityException e){
-                Toast.makeText(this,"Location permissions need to be granted...!",Toast.LENGTH_SHORT).show();
-            }
+            locationDB.addLocation(location, current_time);
+        } else {
+            Toast.makeText(this, "Cannot find location...!", Toast.LENGTH_LONG).show();
         }
         showNotification();
-        return START_STICKY;
 
+
+
+//      setting alarm again
+        Intent location_intent = new Intent(this, LocationService.class);
+        PendingIntent location_pending_intent = PendingIntent.getService(this, 0, location_intent, 0);
+
+        AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        // Start service every 1 minute
+        alarm.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+LoggedActivity.REPEAT_TIME, location_pending_intent);
     }
 
     private void showNotification() {
@@ -148,27 +75,13 @@ public class LocationService extends Service {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
                 notificationIntent, 0);
 
-//        Intent previousIntent = new Intent(this, LocationService.class);
-//        previousIntent.setAction(Constants.ACTION.PREV_ACTION);
-//        PendingIntent ppreviousIntent = PendingIntent.getService(this, 0,
-//                previousIntent, 0);
-//
-//        Intent playIntent = new Intent(this, LocationService.class);
-//        playIntent.setAction(Constants.ACTION.PLAY_ACTION);
-//        PendingIntent pplayIntent = PendingIntent.getService(this, 0,
-//                playIntent, 0);
-//
-//        Intent nextIntent = new Intent(this, LocationService.class);
-//        nextIntent.setAction(Constants.ACTION.NEXT_ACTION);
-//        PendingIntent pnextIntent = PendingIntent.getService(this, 0,
-//                nextIntent, 0);
 
         Bitmap icon = BitmapFactory.decodeResource(getResources(),
                 R.drawable.ic_launcher);
 
         Notification notification = new NotificationCompat.Builder(this)
                 .setContentTitle("Route Radar Tracker")
-                .setTicker("TutorialsFace Music Player")
+                .setTicker("Route Radar Tracker")
                 .setContentText("Tracking...")
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
