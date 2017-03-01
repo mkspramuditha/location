@@ -66,7 +66,7 @@ public class LoggedActivity extends AppCompatActivity {
     public void startLocationService(){
         setLocationAlarm();
         Toast.makeText(this,"Tracking started...",Toast.LENGTH_SHORT).show();
-        setMqttAlarm();
+//        setMqttAlarm();
     }
 
 
