@@ -39,11 +39,6 @@
             <!-- </intent-filter> -->
         </activity>
 
-        <service
-            android:name=".MqttSendService"
-            android:enabled="true"
-            android:exported="true" />
-
         <activity android:name=".NotificationActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>

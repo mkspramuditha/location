@@ -10,15 +10,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.example.shan.location.DB.LocationDB;
-
-import java.util.Calendar;
-
 public class LoggedActivity extends AppCompatActivity {
 
 
@@ -27,18 +20,12 @@ public class LoggedActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 0;
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 0;
 
-    LocationDB locationDB;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logged);
 
-
-
-        locationDB= LocationDB.getInstance(LoggedActivity.this);
 
 
         String var_username=getIntent().getStringExtra("var_username");
@@ -66,32 +53,18 @@ public class LoggedActivity extends AppCompatActivity {
     public void startLocationService(){
         setLocationAlarm();
         Toast.makeText(this,"Tracking started...",Toast.LENGTH_SHORT).show();
-//        setMqttAlarm();
     }
 
 
     private void setLocationAlarm(){
-//        Calendar cal = Calendar.getInstance();
         Intent intent = new Intent(this, LocationService.class);
         PendingIntent location_pending_intent = PendingIntent.getService(this, 0, intent, 0);
 
         AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        // Start service every 1 minute
-//        alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
-//                REPEAT_TIME, location_pending_intent);
+        // Start service every 5 minute
         alarm.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), location_pending_intent);
     }
 
-    public void setMqttAlarm(){
-        Calendar cal = Calendar.getInstance();
-        Intent intent = new Intent(this, MqttSendService.class);
-        PendingIntent pintent = PendingIntent.getService(this, 11, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        // Start service every 1 minute
-        alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
-                60000, pintent);
-    }
 
 
     private boolean checkLocationPermissions(){
