@@ -57,8 +57,11 @@ public class LoggedActivity extends AppCompatActivity {
 
 
     private void setLocationAlarm(){
-        Intent intent = new Intent(this, LocationService.class);
-        PendingIntent location_pending_intent = PendingIntent.getService(this, 0, intent, 0);
+//        Intent intent = new Intent(this, LocationService.class);
+        Intent intent = new Intent(this, AlarmReceiver.class);
+
+//        PendingIntent location_pending_intent = PendingIntent.getService(this, 0, intent, 0);
+        PendingIntent location_pending_intent = PendingIntent.getBroadcast(this.getApplicationContext(),0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         // Start service every 5 minute
