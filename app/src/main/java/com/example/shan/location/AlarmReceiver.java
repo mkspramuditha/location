@@ -33,22 +33,25 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     public AlarmReceiver() {
 
-//        Mqtt object................................
-        try {
-            MemoryPersistence persistance = new MemoryPersistence();
-            client = new MqttClient("tcp://128.199.217.137:1883", "client1", persistance);
-            client.connect();
-
-        } catch (MqttException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+////        Mqtt object................................
+//        try {
+//            MemoryPersistence persistance = new MemoryPersistence();
+//            client = new MqttClient("tcp://128.199.217.137:1883", "client1", persistance);
+//            client.connect();
+//
+//        } catch (MqttException e) {
+//            e.printStackTrace();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     //......................Mqtt send service
     private void sendMqttMsg(Context context){
         try {
+            MemoryPersistence persistance = new MemoryPersistence();
+            client = new MqttClient("tcp://128.199.217.137:1883", "client1", persistance);
+
             client.connect();
         } catch (MqttException e) {
             e.printStackTrace();
@@ -81,6 +84,12 @@ public class AlarmReceiver extends BroadcastReceiver {
                 }
                 locationDB.sentToServer(lr.getRecord_id());
                 Toast.makeText(context,"sent to server",Toast.LENGTH_SHORT).show();
+                try {
+                    client.disconnect();
+                }
+                catch (MqttException e){
+                    e.printStackTrace();
+                }
             }
         }
     }
