@@ -270,6 +270,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        googleApiClient.stopAutoManage(this);
+        googleApiClient.disconnect();
+    }
+
     /**
      * Requests the READ_PHONE_STATE permission.
      * If the permission has been denied previously, a dialog will prompt the user to grant the
