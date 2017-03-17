@@ -12,6 +12,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Calendar;
+
 public class LoggedActivity extends AppCompatActivity {
 
 
@@ -59,13 +62,14 @@ public class LoggedActivity extends AppCompatActivity {
     private void setLocationAlarm(){
 //        Intent intent = new Intent(this, LocationService.class);
         Intent intent = new Intent(this, AlarmReceiver.class);
-
+        Calendar cl = Calendar.getInstance();
 //        PendingIntent location_pending_intent = PendingIntent.getService(this, 0, intent, 0);
         PendingIntent location_pending_intent = PendingIntent.getBroadcast(this.getApplicationContext(),0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         // Start service every 5 minute
-        alarm.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), location_pending_intent);
+//        alarm.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), location_pending_intent);
+    alarm.setRepeating(AlarmManager.RTC_WAKEUP,cl.getTimeInMillis(),REPEAT_TIME,location_pending_intent);
     }
 
 

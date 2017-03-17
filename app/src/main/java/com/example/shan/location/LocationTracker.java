@@ -20,7 +20,7 @@ import java.util.Date;
 public class LocationTracker implements LocationListener{
     Context context;
 
-    private static final long MIN_DISTANCE = 5,MIN_TIME=5*60*1000;
+    private static final long MIN_DISTANCE = 0,MIN_TIME=5*60*1000;
 
     LocationManager locationManager;
     Location location=null;

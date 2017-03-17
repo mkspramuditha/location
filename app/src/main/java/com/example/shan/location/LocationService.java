@@ -144,12 +144,12 @@ public class LocationService extends Service {
 
 
 //      setting alarm again
-        Intent location_intent = new Intent(this, LocationService.class);
-        PendingIntent location_pending_intent = PendingIntent.getService(this, 0, location_intent, 0);
-
-        AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        // Start service every 5 minute
-        alarm.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+LoggedActivity.REPEAT_TIME, location_pending_intent);
+//        Intent location_intent = new Intent(this, LocationService.class);
+//        PendingIntent location_pending_intent = PendingIntent.getService(this, 0, location_intent, 0);
+//
+//        AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//        // Start service every 5 minute
+//        alarm.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+LoggedActivity.REPEAT_TIME, location_pending_intent);
     }
 
     private void showNotification() {
