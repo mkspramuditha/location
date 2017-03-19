@@ -169,7 +169,7 @@ public class LocationService extends Service {
                 .setContentTitle("Route Radar Tracker")
                 .setTicker("Route Radar Tracker")
                 .setContentText("Tracking...")
-                .setSmallIcon(R.drawable.ic_launcher)
+                .setSmallIcon(R.drawable.logo)
                 .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
                 .setContentIntent(pendingIntent)
                 .setOngoing(true)
