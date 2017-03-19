@@ -56,7 +56,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private static final int REQUEST_CODE = 100;
     private ImageButton login;
 //    private TextView name;
-    private GoogleApiClient googleApiClient;
+    private GoogleApiClient googleApiClient=null;
     private GoogleSignInOptions signInOptions;
 
 
@@ -117,8 +117,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 //                .requestIdToken(getString(R.string.client_id))
                 .build();
 
-        googleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, this).addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions).build();
-
+        if(googleApiClient==null) {
+            googleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, this).addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions).build();
+        }
 
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
         startActivityForResult(signInIntent, REQUEST_CODE);
