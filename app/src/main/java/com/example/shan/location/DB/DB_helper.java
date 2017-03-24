@@ -12,7 +12,7 @@ public class DB_helper extends SQLiteOpenHelper {
     //database and table attributes
     protected static final String db_name = "location_db";
     private static DB_helper db_helper = null;
-    private static final int db_version = 9;
+    private static final int db_version = 10;
 
     public static final String record_id = "record_id";
 
@@ -27,11 +27,7 @@ public class DB_helper extends SQLiteOpenHelper {
     public static final String updated_time = "updated_time";
     public static final String latitude = "latitude";
     public static final String longitude = "longitude";
-    public static final String sent_to_server = "sent_to_server";
 
-
-
-    public static final String time = "time";
 
     //singleton for DB_helper class
     public static DB_helper getInstance(Context context) {
@@ -48,7 +44,7 @@ public class DB_helper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String locations_table_query = String.format("CREATE TABLE %s(%s INTEGER PRIMARY KEY,%s VARCHAR(30) NOT NULL ," +
-                "%s VARCHAR(30),%s FLOAT,%s FLOAT,%s INT);", locations_table,record_id, user_emi_no,updated_time,latitude,longitude,sent_to_server);
+                "%s VARCHAR(30),%s FLOAT,%s FLOAT);", locations_table,record_id, user_emi_no,updated_time,latitude,longitude);
 
         String user_table_query=String.format("CREATE TABLE %s(%s VARCHAR(20),%s VARCHAR(30),%s VARCHAR(100),%s VARCHAR(20));"
                 ,user_table, username,user_emi_no,user_email,user_password);
