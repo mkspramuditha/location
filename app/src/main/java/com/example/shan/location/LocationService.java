@@ -49,23 +49,23 @@ public class LocationService extends Service {
         locationDB=LocationDB.getInstance(this);
 
 //        Mqtt object................................
-//        try {
-//            MemoryPersistence persistance = new MemoryPersistence();
-//            client = new MqttClient("tcp://128.199.217.137:1883", "client1", persistance);
+        try {
+            MemoryPersistence persistance = new MemoryPersistence();
+            client = new MqttClient("tcp://128.199.217.137:1883", "client1", persistance);
 //            client.connect();
-//
-//        } catch (MqttException e) {
-//            e.printStackTrace();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+
+        } catch (MqttException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 //......................Mqtt send service
     private void sendMqttMsg(){
         try {
-            MemoryPersistence persistance = new MemoryPersistence();
-            client = new MqttClient("tcp://128.199.217.137:1883", "client1", persistance);
+//            MemoryPersistence persistance = new MemoryPersistence();
+//            client = new MqttClient("tcp://128.199.217.137:1883", "client1", persistance);
             client.connect();
         } catch (MqttException e) {
             e.printStackTrace();
