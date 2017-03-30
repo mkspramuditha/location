@@ -12,11 +12,11 @@ import android.widget.Toast;
 
 import com.example.shan.location.DB.LocationDB;
 
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+//import org.eclipse.paho.client.mqttv3.MqttClient;
+//import org.eclipse.paho.client.mqttv3.MqttException;
+//import org.eclipse.paho.client.mqttv3.MqttMessage;
+//import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
+//import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,7 +24,7 @@ import java.text.DateFormat;
 import java.util.Date;
 
 public class AlarmReceiver extends BroadcastReceiver {
-    private static MqttClient client;
+//    private static MqttClient client;
 
 
     LocationDB locationDB;
@@ -48,14 +48,14 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     //......................Mqtt send service
     private void sendMqttMsg(Context context){
-        try {
-            MemoryPersistence persistance = new MemoryPersistence();
-            client = new MqttClient("tcp://128.199.217.137:1883", "client1", persistance);
-
-            client.connect();
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            MemoryPersistence persistance = new MemoryPersistence();
+//            client = new MqttClient("tcp://128.199.217.137:1883", "client1", persistance);
+//
+//            client.connect();
+//        } catch (MqttException e) {
+//            e.printStackTrace();
+//        }
 
         if(!isInternetConnected(context)){
             Toast.makeText(context,"Please enable data or wifi...!",Toast.LENGTH_SHORT).show();
@@ -74,22 +74,22 @@ public class AlarmReceiver extends BroadcastReceiver {
                 String payload=jsonObject.toString();
 
                 //send mqqtt msg to server
-                MqttMessage message = new MqttMessage(payload.getBytes());
-                try {
-                    client.publish("test", message);
-                } catch (MqttPersistenceException e) {
-                    e.printStackTrace();
-                } catch (MqttException e) {
-                    e.printStackTrace();
-                }
-                locationDB.sentToServer(lr.getRecord_id());
-                Toast.makeText(context,"sent to server",Toast.LENGTH_SHORT).show();
-                try {
-                    client.disconnect();
-                }
-                catch (MqttException e){
-                    e.printStackTrace();
-                }
+//                MqttMessage message = new MqttMessage(payload.getBytes());
+//                try {
+//                    client.publish("test", message);
+//                } catch (MqttPersistenceException e) {
+//                    e.printStackTrace();
+//                } catch (MqttException e) {
+//                    e.printStackTrace();
+//                }
+//                locationDB.sentToServer(lr.getRecord_id());
+//                Toast.makeText(context,"sent to server",Toast.LENGTH_SHORT).show();
+//                try {
+//                    client.disconnect();
+//                }
+//                catch (MqttException e){
+//                    e.printStackTrace();
+//                }
             }
         }
     }
