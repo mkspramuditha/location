@@ -21,6 +21,8 @@ public class LocationDB {
     Context context;
     DB_helper db_helper;
 
+    SQLiteDatabase read_db,write_db;
+
 
     public static LocationDB getInstance(Context context){
         if(locationDB==null){
@@ -32,16 +34,18 @@ public class LocationDB {
     private LocationDB(Context context) {
         this.context=context;
         db_helper=DB_helper.getInstance(context);
+
+        read_db=db_helper.getReadableDatabase();
+        write_db=db_helper.getWritableDatabase();
     }
 
 //    return logged user iin the phone
     public User getLoggedUser(){
 
-        SQLiteDatabase db=db_helper.getReadableDatabase();
 
         String query = String.format("SELECT * FROM %s ;",DB_helper.user_table);
 
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = read_db.rawQuery(query, null);
 
         if (cursor.moveToNext())
         {
@@ -57,10 +61,9 @@ public class LocationDB {
     }
 
     public void setUser(String username,String emi,String email,String password){
-        SQLiteDatabase db=db_helper.getWritableDatabase();
 
 //        Delete other users
-        db.execSQL("delete from "+DB_helper.user_table);
+        write_db.execSQL("delete from "+DB_helper.user_table);
 
 //        insert new user
         ContentValues cv=new ContentValues();
@@ -68,20 +71,18 @@ public class LocationDB {
         cv.put(DB_helper.user_emi_no,emi);
         cv.put(DB_helper.user_email,email);
         cv.put(DB_helper.user_password,password);
-        db.insert(DB_helper.user_table, null, cv);
+        write_db.insert(DB_helper.user_table, null, cv);
 
     }
 
     public void addLocation(Location location,String current_time){
-
-        SQLiteDatabase db=db_helper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(DB_helper.user_emi_no, getLoggedUser().getEmi());
         values.put(DB_helper.updated_time, current_time);       //DateFormat.getDateTimeInstance().format(new Date())
         values.put(DB_helper.latitude,location.getLatitude());
         values.put(DB_helper.longitude,location.getLongitude());
-        db.insert(DB_helper.locations_table, null, values);
+        write_db.insert(DB_helper.locations_table, null, values);
 
         Toast.makeText(context, "Location added to the database", Toast.LENGTH_LONG).show();
     }
@@ -89,11 +90,10 @@ public class LocationDB {
 
     public ArrayList<LocationRecord> getPendingLocationRecords(){
         ArrayList<LocationRecord> locationRecords=new ArrayList<>();
-        SQLiteDatabase db=db_helper.getReadableDatabase();
 
         String query = String.format("SELECT * FROM %s ;",DB_helper.locations_table);
 
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = read_db.rawQuery(query, null);
 
         //add account objects to a list
         while (cursor.moveToNext())
@@ -115,7 +115,6 @@ public class LocationDB {
     }
 
     public void sentToServer(int record_id){
-        SQLiteDatabase db=db_helper.getWritableDatabase();
-        db.delete(DB_helper.locations_table,DB_helper.record_id+"="+record_id,null);
+        write_db.delete(DB_helper.locations_table,DB_helper.record_id+"="+record_id,null);
     }
 }

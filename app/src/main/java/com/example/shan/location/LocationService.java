@@ -63,47 +63,51 @@ public class LocationService extends Service {
 
 //......................Mqtt send service
     private void sendMqttMsg(){
-        try {
-//            MemoryPersistence persistance = new MemoryPersistence();
-//            client = new MqttClient("tcp://128.199.217.137:1883", "client1", persistance);
-            client.connect();
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
-
         if(!isInternetConnected()){
             Toast.makeText(this,"Please enable data or wifi...!",Toast.LENGTH_SHORT).show();
         }
-        else{
-            //        retrieve msges from db
-            for (LocationRecord lr:locationDB.getPendingLocationRecords()) {
-                JSONObject jsonObject=new JSONObject();
-                try {
-                    jsonObject.put("imie", lr.getEmi_no());
-                    jsonObject.put("latitude",lr.getLatitude());
-                    jsonObject.put("longitude",lr.getLongitude());
-                    jsonObject.put("time",lr.getUpdated_time());
-                }
-                catch (JSONException e){}
-                String payload=jsonObject.toString();
+        else {
+            try {
+//            MemoryPersistence persistance = new MemoryPersistence();
+//            client = new MqttClient("tcp://128.199.217.137:1883", "client1", persistance);
+                client.connect();
 
-                //send mqqtt msg to server
-                MqttMessage message = new MqttMessage(payload.getBytes());
-                try {
-                    client.publish("test", message);
-                } catch (MqttPersistenceException e) {
-                    e.printStackTrace();
-                } catch (MqttException e) {
-                    e.printStackTrace();
+                //        retrieve msges from db
+                for (LocationRecord lr : locationDB.getPendingLocationRecords()) {
+                    JSONObject jsonObject = new JSONObject();
+                    try {
+                        jsonObject.put("imie", lr.getEmi_no());
+                        jsonObject.put("latitude", lr.getLatitude());
+                        jsonObject.put("longitude", lr.getLongitude());
+                        jsonObject.put("time", lr.getUpdated_time());
+                    } catch (JSONException e) {
+                    }
+                    String payload = jsonObject.toString();
+
+                    //send mqqtt msg to server
+                    MqttMessage message = new MqttMessage(payload.getBytes());
+                    try {
+                        client.publish("test", message);
+                    } catch (MqttPersistenceException e) {
+                        e.printStackTrace();
+                    } catch (MqttException e) {
+                        e.printStackTrace();
+                    }
+                    locationDB.sentToServer(lr.getRecord_id());
+                    Toast.makeText(this, "sent to server", Toast.LENGTH_SHORT).show();
                 }
-                locationDB.sentToServer(lr.getRecord_id());
-                Toast.makeText(this,"sent to server",Toast.LENGTH_SHORT).show();
+
+            } catch (MqttException e) {
+                e.printStackTrace();
+                Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
             }
-        }
-        try {
-            client.disconnect();
-        } catch (MqttException e) {
-            e.printStackTrace();
+
+
+            try {
+                client.disconnect();
+            } catch (MqttException e) {
+                e.printStackTrace();
+            }
         }
     }
 
