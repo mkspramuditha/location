@@ -46,7 +46,7 @@ public class LocationService extends Service {
 
     public LocationService() {
 
-        locationDB=LocationDB.getInstance(this);
+//        locationDB=LocationDB.getInstance(this);
 
 //        Mqtt object................................
 //        try {
@@ -96,7 +96,7 @@ public class LocationService extends Service {
 //                } catch (MqttException e) {
 //                    e.printStackTrace();
 //                }
-                locationDB.sentToServer(lr.getRecord_id());
+//                locationDB.sentToServer(lr.getRecord_id());
                 Toast.makeText(this,"sent to server",Toast.LENGTH_SHORT).show();
             }
         }
@@ -140,14 +140,14 @@ public class LocationService extends Service {
         Location location = locationTracker.getLocation();
         if (location != null) {
             String current_time = DateFormat.getDateTimeInstance().format(new Date());
-            locationDB.addLocation(location, current_time);
+//            locationDB.addLocation(location, current_time);
         } else {
             Toast.makeText(this, "Cannot find location...!", Toast.LENGTH_LONG).show();
         }
         showNotification();
 //...................MQTT send service..............................................
 
-        sendMqttMsg();
+//        sendMqttMsg();
 
 
 //      setting alarm again

@@ -14,13 +14,13 @@ public class NotificationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
 
-        LocationDB locationDB = LocationDB.getInstance(this);
+//        LocationDB locationDB = LocationDB.getInstance(this);
 
-//        Check whether logged
-        User loggedUser = locationDB.getLoggedUser();
-        if (loggedUser != null) {
-            ((TextView) findViewById(R.id.username)).setText(loggedUser.getUsername());
-            ((TextView) findViewById(R.id.password)).setText(loggedUser.getPassword());
-        }
+////        Check whether logged
+//        User loggedUser = locationDB.getLoggedUser();
+//        if (loggedUser != null) {
+//            ((TextView) findViewById(R.id.username)).setText(loggedUser.getUsername());
+//            ((TextView) findViewById(R.id.password)).setText(loggedUser.getPassword());
+//        }
     }
 }

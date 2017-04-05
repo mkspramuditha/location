@@ -72,20 +72,20 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         login = (ImageButton) findViewById(R.id.regbtn);
 
 
-        locationDB = LocationDB.getInstance(this);
+//        locationDB = LocationDB.getInstance(this);
 
 //        Check whether logged
-        User loggedUser = locationDB.getLoggedUser();
-        if (loggedUser == null) {
-            Toast.makeText(this, "Please Login...!", Toast.LENGTH_LONG).show();
-        } else {
+//        User loggedUser = locationDB.getLoggedUser();
+//        if (loggedUser == null) {
+//            Toast.makeText(this, "Please Login...!", Toast.LENGTH_LONG).show();
+//        } else {
             Intent intent = new Intent(this, LoggedActivity.class);
 //        pass username and password variables
-            intent.putExtra("var_username", loggedUser.getUsername());//correct to the response username
-            intent.putExtra("var_password", loggedUser.getPassword());//correct to the response username
+//            intent.putExtra("var_username", loggedUser.getUsername());//correct to the response username
+//            intent.putExtra("var_password", loggedUser.getPassword());//correct to the response username
 
             startActivity(intent);
-        }
+//        }
 
 
         login.setOnClickListener(new View.OnClickListener() {
@@ -108,8 +108,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void signIn(){
-
-
         //for google sign in
 
         signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -223,7 +221,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private void logUser(String email,String emi_no,String username,String password){
 //        Add to databaase
-        locationDB.setUser(username,emi_no,email, password);
+//        locationDB.setUser(username,emi_no,email, password);
 
 
         Intent intent = new Intent(this, LoggedActivity.class);
