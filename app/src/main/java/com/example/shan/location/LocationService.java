@@ -144,7 +144,7 @@ public class LocationService extends Service {
         } else {
             Toast.makeText(this, "Cannot find location...!", Toast.LENGTH_LONG).show();
         }
-        showNotification();
+//        showNotification();
 //...................MQTT send service..............................................
 
 //        sendMqttMsg();
